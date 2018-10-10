@@ -10,6 +10,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import java.io.IOException;
+import java.net.InetAddress;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -23,6 +26,7 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.loader)ProgressBar loader;
 
     private String email_mobno, password;
+    private View view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         ButterKnife.bind(this);
+        view = findViewById(android.R.id.content);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,5 +84,31 @@ public class LoginActivity extends AppCompatActivity {
         Intent main = new Intent(this, MainActivity.class);
         main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(main);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        try {
+            if(!isConnected()){
+                Snackbar snackbar = Snackbar.make(view, "Enter Password!", Snackbar.LENGTH_SHORT);
+                View snackbarView = snackbar.getView();
+                snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                snackbar.show();
+                loginButton.setEnabled(false);
+            }
+            else
+                loginButton.setEnabled(true);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isConnected() throws InterruptedException, IOException
+    {
+        String command = "ping -c 1 google.com";
+        return (Runtime.getRuntime().exec(command).waitFor() == 0);
     }
 }

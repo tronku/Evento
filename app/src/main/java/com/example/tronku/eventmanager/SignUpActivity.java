@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -19,8 +20,13 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -38,8 +44,12 @@ public class SignUpActivity extends AppCompatActivity {
     @BindView(R.id.signupButton)Button signupButton;
     @BindView(R.id.loader)ProgressBar loader;
     @BindView(R.id.layer)View layer;
+    @BindView(R.id.error_result)TextView result;
 
-    private String email, password, name, mobile;
+    private String email, password, name, mobile, statusCode;
+    private RequestQueue queue;
+    final String signUpApi = "http://eventoapi.dscjss.in/api/v1/signup";
+    private View view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +57,7 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
         ButterKnife.bind(this);
+        view = findViewById(android.R.id.content);
 
         signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,47 +121,84 @@ public class SignUpActivity extends AppCompatActivity {
                     mobileNoEdit.setEnabled(false);
                     layer.setVisibility(View.VISIBLE);
                     loader.setVisibility(View.VISIBLE);
-                    new JsonAsyncTask().execute("http://eventoapi.dscjss.in/api/v1/signup");
+                    signUpData(name, email, mobile, password);
                 }
             }
         });
     }
 
-    public class JsonAsyncTask extends AsyncTask<String, Void, String> {
+    public void signUpData(final String name, final String email, final String mobile, final String password){
 
-        @Override
-        protected String doInBackground(String... strings) {
-            String url = strings[0];
-            StringRequest request = new StringRequest(Request.Method.POST, url,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            Log.d("response","WORKING");
+        JSONObject object = new JSONObject();
+        try {
+            object.put("name", name);
+            object.put("email", email);
+            object.put("mobile", mobile);
+            object.put("password", password);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.POST, signUpApi, object,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            statusCode = response.getString("status");
+                            nameEdit.setEnabled(true);
+                            emailIdEdit.setEnabled(true);
+                            passwordEdit.setEnabled(true);
+                            mobileNoEdit.setEnabled(true);
+                            layer.setVisibility(View.INVISIBLE);
+                            loader.setVisibility(View.INVISIBLE);
+
+                            if(statusCode.equals("200")) {
+                                Intent otp = new Intent(SignUpActivity.this, OTPActivity.class);
+                                otp.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(otp);
+                            }
+                            else{
+                                Snackbar snackbar = Snackbar.make(view, "Error in signing up!", Snackbar.LENGTH_LONG);
+                                View snackbarView = snackbar.getView();
+                                snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                                snackbar.show();
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d("response","NOT WORKING");
-                }
-            }) {
-                @Override
-                public Map<String, String> getHeaders() {
-                    Map<String, String> headers = new HashMap<>();
-                    headers.put("Accept", "application/json; charset=UTF-8");
-                    return headers;
-                }
-            };
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("error",error.toString());
+                result.setText(error.toString());
+                result.setText(error.toString());
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Accept", "application/json");
+                return headers;
+            }
+        };
 
-            RequestQueue queue = Volley.newRequestQueue(SignUpActivity.this);
-            queue.add(request);
-            queue.start();
-            return "Done";
-        }
+        objectRequest.setTag("auth");
+        queue = Volley.newRequestQueue(SignUpActivity.this);
+        queue.add(objectRequest);
 
-        @Override
-        protected void onPostExecute(String s) {
-            if(s.equals("Done"))
-                startActivity(new Intent(SignUpActivity.this, OTPActivity.class));
-        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        queue.cancelAll("auth");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        queue.cancelAll("auth");
     }
 }
