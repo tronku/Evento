@@ -28,7 +28,7 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     implementation 'com.android.support:cardview-v7:28.0.0'
     implementation 'nl.psdcompany:duo-navigation-drawer:2.0.8'
-    implementation 'com.github.stfalcon:smsverifycatcher:0.3.2'
+    implementation 'com.chaos.view:pinview:1.4.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

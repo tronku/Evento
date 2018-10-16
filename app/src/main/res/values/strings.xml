@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Evento</string>
+
+    <string-array name="menu">
+        <item>Dashboard</item>
+        <item>Past Events</item>
+        <item>About</item>
+    </string-array>
+
 </resources>

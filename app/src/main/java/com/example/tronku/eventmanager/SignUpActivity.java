@@ -1,5 +1,7 @@
 package com.example.tronku.eventmanager;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
@@ -11,11 +13,13 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -46,9 +50,9 @@ public class SignUpActivity extends AppCompatActivity {
     @BindView(R.id.layer)View layer;
     @BindView(R.id.error_result)TextView result;
 
-    private String email, password, name, mobile, statusCode;
+    private String email, password, name, mobile;
     private RequestQueue queue;
-    final String signUpApi = "http://eventoapi.dscjss.in/api/v1/signup";
+    final String signUpApi = "http://13.126.64.67/auth/register";
     private View view;
 
     @Override
@@ -110,7 +114,6 @@ public class SignUpActivity extends AppCompatActivity {
                     snackbar.show();
                 }
                 else {
-                    Toast.makeText(SignUpActivity.this, "Sending", Toast.LENGTH_SHORT).show();
                     emailIdEdit.setText("");
                     passwordEdit.setText("");
                     nameEdit.setText("");
@@ -133,7 +136,7 @@ public class SignUpActivity extends AppCompatActivity {
         try {
             object.put("name", name);
             object.put("email", email);
-            object.put("mobile", mobile);
+            object.put("phone", mobile);
             object.put("password", password);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -143,46 +146,74 @@ public class SignUpActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        try {
-                            statusCode = response.getString("status");
-                            nameEdit.setEnabled(true);
-                            emailIdEdit.setEnabled(true);
-                            passwordEdit.setEnabled(true);
-                            mobileNoEdit.setEnabled(true);
-                            layer.setVisibility(View.INVISIBLE);
-                            loader.setVisibility(View.INVISIBLE);
+                        nameEdit.setEnabled(true);
+                        emailIdEdit.setEnabled(true);
+                        passwordEdit.setEnabled(true);
+                        mobileNoEdit.setEnabled(true);
+                        Log.d("response",response.toString());
+                        layer.setVisibility(View.INVISIBLE);
+                        loader.setVisibility(View.INVISIBLE);
 
-                            if(statusCode.equals("200")) {
-                                Intent otp = new Intent(SignUpActivity.this, OTPActivity.class);
-                                otp.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(otp);
-                            }
-                            else{
-                                Snackbar snackbar = Snackbar.make(view, "Error in signing up!", Snackbar.LENGTH_LONG);
-                                View snackbarView = snackbar.getView();
-                                snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-                                snackbar.show();
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        Intent otp = new Intent(SignUpActivity.this, OTPActivity.class);
+                        otp.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(otp);
                     }
                 }, new Response.ErrorListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("error",error.toString());
-                result.setText(error.toString());
-                result.setText(error.toString());
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.d("error",volleyError.toString());
+                result.setText(volleyError.toString());
+                if(volleyError.networkResponse.statusCode==400){
+                    String json = new String(volleyError.networkResponse.data);
+                    try {
+                        JSONObject response = new JSONObject(json);
+                        String error="";
+                        if(response.has("email")){
+                            JSONArray emailArray = response.getJSONArray("email");
+                            String emailError = emailArray.get(0).toString().replaceAll("[\"]","");
+                            error = error + emailError;
+                        }
+                        if(response.has("phone")){
+                            JSONArray phoneArray = response.getJSONArray("phone");
+                            String phoneError = phoneArray.get(0).toString().replaceAll("[\"]","");
+                            error = error + "\n" + phoneError;
+                        }
+                        if(response.has("password")){
+                            JSONArray passwordArray = response.getJSONArray("password");
+                            String passwordError = passwordArray.get(0).toString().replaceAll("[\"]","");
+                            error = error + "\n" + passwordError;
+                        }
+
+                        final Dialog dialog = new Dialog(SignUpActivity.this);
+                        dialog.setContentView(R.layout.dialog_layout);
+                        ImageView close = dialog.findViewById(R.id.close);
+                        close.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                dialog.dismiss();
+                            }
+                        });
+                        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(DialogInterface dialogInterface) {
+                                nameEdit.setEnabled(true);
+                                emailIdEdit.setEnabled(true);
+                                passwordEdit.setEnabled(true);
+                                mobileNoEdit.setEnabled(true);
+                                layer.setVisibility(View.INVISIBLE);
+                                loader.setVisibility(View.INVISIBLE);
+                            }
+                        });
+                        TextView errorView = dialog.findViewById(R.id.errorText);
+                        errorView.setText(error);
+                        dialog.show();
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-        }){
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Accept", "application/json");
-                return headers;
-            }
-        };
+        });
 
         objectRequest.setTag("auth");
         queue = Volley.newRequestQueue(SignUpActivity.this);
