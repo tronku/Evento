@@ -52,7 +52,6 @@ public class SignUpActivity extends AppCompatActivity {
 
     private String email, password, name, mobile;
     private RequestQueue queue;
-    final String signUpApi = "http://13.126.64.67/auth/register";
     private View view;
 
     @Override
@@ -142,7 +141,7 @@ public class SignUpActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.POST, signUpApi, object,
+        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.POST, API.SIGNUP_API, object,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -156,6 +155,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                         Intent otp = new Intent(SignUpActivity.this, OTPActivity.class);
                         otp.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        otp.putExtra("email", email);
                         startActivity(otp);
                     }
                 }, new Response.ErrorListener() {

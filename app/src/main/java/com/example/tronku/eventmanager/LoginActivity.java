@@ -3,6 +3,8 @@ package com.example.tronku.eventmanager;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -42,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private String email_mobno, password;
     private View view;
-    private String loginApi = "http://13.126.64.67/auth/login";
+    private SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,7 @@ public class LoginActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         view = findViewById(android.R.id.content);
+        pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,13 +109,19 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        JsonObjectRequest loginreq = new JsonObjectRequest(Request.Method.POST, loginApi, credentials,
+        JsonObjectRequest loginreq = new JsonObjectRequest(Request.Method.POST, API.LOGIN_API, credentials,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         if(response.has("token")){
                             try {
                                 String token = response.getString("token");
+                                SharedPreferences.Editor editor = pref.edit();
+                                editor.putString("token", token);
+                                editor.putString("email", response.getString("email"));
+                                editor.putString("name", response.getString("name"));
+                                editor.apply();
+
                                 Log.d("token", token);
                                 emailId_mobnoEdit.setText("");
                                 passwordEdit.setText("");
@@ -186,14 +195,20 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         try {
             if(!isConnected()){
-                Snackbar snackbar = Snackbar.make(view, "Enter Password!", Snackbar.LENGTH_SHORT);
+                Snackbar snackbar = Snackbar.make(view, "No Internet Connection!", Snackbar.LENGTH_INDEFINITE);
                 View snackbarView = snackbar.getView();
                 snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
                 snackbar.show();
                 loginButton.setEnabled(false);
+                signupButton.setEnabled(false);
             }
-            else
+            else {
                 loginButton.setEnabled(true);
+                signupButton.setEnabled(true);
+                if(pref.contains("token")){
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                }
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (IOException e) {
