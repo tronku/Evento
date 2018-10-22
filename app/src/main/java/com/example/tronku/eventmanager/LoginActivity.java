@@ -193,16 +193,29 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        networkCheck();
+    }
+
+    public void networkCheck(){
+        Snackbar snackbar = Snackbar.make(view, "No Internet Connection!", Snackbar.LENGTH_INDEFINITE);
+
         try {
             if(!isConnected()){
-                Snackbar snackbar = Snackbar.make(view, "No Internet Connection!", Snackbar.LENGTH_INDEFINITE);
                 View snackbarView = snackbar.getView();
                 snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                snackbar.setAction("RETRY", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        networkCheck();
+                    }
+                });
+                snackbar.setActionTextColor(getResources().getColor(R.color.orange));
                 snackbar.show();
                 loginButton.setEnabled(false);
                 signupButton.setEnabled(false);
             }
             else {
+                snackbar.dismiss();
                 loginButton.setEnabled(true);
                 signupButton.setEnabled(true);
                 if(pref.contains("token")){

@@ -11,4 +11,10 @@
     <color name="orangeDark"> #f5b041 </color>
     <color name="red"> #c0392b </color>
     <color name="green"> #27ae60 </color>
+    
+    //colors for event list layer
+    <color name="orangeLayer"> #e67e22  </color>
+    <color name="greenLayer">  #117a65 </color>
+    <color name="redLayer">  #a93226 </color>
+    <color name="purpleLayer">  #884ea0 </color>
 </resources>

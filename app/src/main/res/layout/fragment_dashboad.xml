@@ -3,57 +3,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DashboadFragment">
+    tools:context=".DashboardFragment"
+    android:background="@color/cardViewBg">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Hey!"
-                android:fontFamily="@font/robotolight"
-                android:textSize="28sp"
-                android:layout_marginStart="16dp"
-                android:id="@+id/greetings"
-                android:layout_marginTop="10dp"/>
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:background="@color/colorAccentDark"
-                android:layout_weight="1"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"/>
-
-        </LinearLayout>
-
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="260dp"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="14dp"
             android:fontFamily="@font/robotoregular"
             android:id="@+id/infoText"
-            android:text="Your dashboard is empty! \nInvolve yourself in other activities!"/>
+            android:textSize="18sp"
+            android:text="Here's the list of top 10 upcoming events - "/>
 
         <android.support.v4.widget.SwipeRefreshLayout
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="20dp"
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/swiperefresh">
 
             <android.support.v7.widget.RecyclerView
+                android:paddingTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layoutAnimation="@anim/layoutanimation_falldown"
                 android:id="@+id/eventsListView"/>
 
         </android.support.v4.widget.SwipeRefreshLayout>

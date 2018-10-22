@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
         handleDrawer();
         handleMenu();
 
-        goToFragment(new DashboadFragment(), false);
+        goToFragment(new DashboardFragment(), false);
         menuAdapter.setViewSelected(0, true);
         setTitle(titles.get(0));
 
@@ -101,13 +101,13 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
 
         switch (position) {
             case 0:
-                goToFragment(new DashboadFragment(), false);
+                goToFragment(new DashboardFragment(), false);
                 break;
             case 1:
                 goToFragment(new PastEventsFragment(), false);
                 break;
             default:
-                goToFragment(new DashboadFragment(), false);
+                goToFragment(new DashboardFragment(), false);
                 break;
         }
 
