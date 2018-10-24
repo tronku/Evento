@@ -26,7 +26,8 @@
         <activity android:name=".SignUpActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".OTPActivity" />
-        <activity android:name=".SocietyFilterActivity"></activity>
+        <activity android:name=".SocietyFilterActivity" />
+        <activity android:name=".EventActivity"></activity>
     </application>
 
 </manifest>

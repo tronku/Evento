@@ -75,4 +75,9 @@ public class SocietyAdapter extends RecyclerView.Adapter<SocietyAdapter.ViewHold
         filter.putStringArrayListExtra("selectedSocieties", selectedSociety);
         context.startActivity(filter);
     }
+
+    public void updateData(ArrayList<Society> list){
+        societyList = list;
+        notifyDataSetChanged();
+    }
 }

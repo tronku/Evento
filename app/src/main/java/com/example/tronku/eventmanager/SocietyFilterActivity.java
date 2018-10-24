@@ -17,9 +17,11 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -43,15 +45,8 @@ public class SocietyFilterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_society_filter);
         ButterKnife.bind(this);
 
-        societyList.add(new Society("Developer Student Clubs", false));
-        societyList.add(new Society("Nibble Computer Society", false));
-        societyList.add(new Society("Illuminati", false));
-        societyList.add(new Society("MMIL", false));
-        societyList.add(new Society("EDC", false));
-
         adapter = new SocietyAdapter(this, societyList);
-        societyRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        societyRecyclerView.setAdapter(adapter);
+        fillData();
 
         applyButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,20 +62,30 @@ public class SocietyFilterActivity extends AppCompatActivity {
 
     public void fillData() {
         final String token = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("token", "token_no");
-
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, API.SOCIETY_API,
-                null, new Response.Listener<JSONObject>() {
+        Log.d("token", token);
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, API.SOCIETY_API,
+                null, new Response.Listener<JSONArray>() {
             @Override
-            public void onResponse(JSONObject response) {
+            public void onResponse(JSONArray response) {
+                for(int i=0; i<response.length(); i++) {
+                    try {
+                        JSONObject society = response.getJSONObject(i);
+                        String name = society.getString("name");
+                        Log.d("society", name);
+                        societyList.add(new Society(name, false));
 
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Log.d("error", error.getCause().toString());
             }
-        }) {
-
+        })
+        {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<>();
@@ -89,9 +94,17 @@ public class SocietyFilterActivity extends AppCompatActivity {
             }
         };
 
-        req.setShouldCache(true);
         RequestQueue queue = Volley.newRequestQueue(this);
-        queue.add(req);
+        queue.add(request);
+        queue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<JSONObject>() {
+            @Override
+            public void onRequestFinished(Request<JSONObject> request) {
+                adapter.updateData(societyList);
+                societyRecyclerView.setLayoutManager(new LinearLayoutManager(SocietyFilterActivity.this));
+                societyRecyclerView.setAdapter(adapter);
+                societyRecyclerView.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
 }
