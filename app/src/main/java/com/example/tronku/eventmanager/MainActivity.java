@@ -23,8 +23,9 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
     @BindView(R.id.drawer)DuoDrawerLayout drawerLayout;
     private com.example.tronku.eventmanager.MenuAdapter menuAdapter;
     private ViewHolder viewHolder;
-
+    private Intent intent;
     private ArrayList<String> titles = new ArrayList<>();
+    private ArrayList<String> societies = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +34,18 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
 
         titles = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.menu)));
         viewHolder = new ViewHolder();
+        intent = getIntent();
 
         handleToolbar();
         handleDrawer();
         handleMenu();
 
-        goToFragment(new DashboardFragment(), false);
+        if(intent.hasExtra("selectedSocieties")){
+            societies = intent.getStringArrayListExtra("selectedSocieties");
+
+        }
+        goToFragment(new DashboardFragment());
+
         menuAdapter.setViewSelected(0, true);
         setTitle(titles.get(0));
 
@@ -69,13 +76,11 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
         viewHolder.mDuoMenuView.setAdapter(menuAdapter);
     }
 
-    private void goToFragment(Fragment fragment, boolean addToBackStack) {
+    private void goToFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-        if (addToBackStack) {
-            transaction.addToBackStack(fragment.getClass().getName());
-        }
-
+        Bundle args = new Bundle();
+        args.putStringArrayList("societies", societies);
+        fragment.setArguments(args);
         transaction.replace(R.id.container, fragment).commit();
     }
 
@@ -85,7 +90,9 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
         SharedPreferences.Editor editor = pref.edit();
         editor.clear();
         editor.apply();
-        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        Intent logOut = new Intent(MainActivity.this, LoginActivity.class);
+        logOut.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(logOut);
     }
 
     @Override
@@ -101,13 +108,13 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
 
         switch (position) {
             case 0:
-                goToFragment(new DashboardFragment(), false);
+                goToFragment(new DashboardFragment());
                 break;
             case 1:
-                goToFragment(new PastEventsFragment(), false);
+                goToFragment(new PastEventsFragment());
                 break;
             default:
-                goToFragment(new DashboardFragment(), false);
+                goToFragment(new DashboardFragment());
                 break;
         }
 

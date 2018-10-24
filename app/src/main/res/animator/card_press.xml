@@ -4,7 +4,7 @@
     <item
         android:state_enabled="true"
         android:state_pressed="true"
-        android:state_hovered="true">
+        android:state_checked="true">
         <set>
             <objectAnimator
                 android:duration="@android:integer/config_shortAnimTime"

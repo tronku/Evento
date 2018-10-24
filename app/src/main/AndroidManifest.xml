@@ -25,7 +25,8 @@
             android:theme="@style/AppThemeNoBar" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".OTPActivity"></activity>
+        <activity android:name=".OTPActivity" />
+        <activity android:name=".SocietyFilterActivity"></activity>
     </application>
 
 </manifest>

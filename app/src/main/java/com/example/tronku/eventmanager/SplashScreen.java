@@ -29,7 +29,7 @@ public class SplashScreen extends AppCompatActivity {
         ButterKnife.bind(this);
 
         imgAnim = AnimationUtils.loadAnimation(SplashScreen.this, R.anim.fade);
-        textAnim = AnimationUtils.loadAnimation(SplashScreen.this, R.anim.fadefast);
+        textAnim = AnimationUtils.loadAnimation(SplashScreen.this, R.anim.fade);
         madeAnim = AnimationUtils.loadAnimation(SplashScreen.this, R.anim.fade);
         eventoLogo.startAnimation(imgAnim);
         madeBy.startAnimation(madeAnim);
