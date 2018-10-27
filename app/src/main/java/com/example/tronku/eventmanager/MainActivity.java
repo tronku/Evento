@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
     private Intent intent;
     private ArrayList<String> titles = new ArrayList<>();
     private boolean hasExtra = false;
+    private boolean upcoming = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +44,25 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
 
         if(intent.hasExtra("name")){
             hasExtra = true;
+            if(intent.getStringExtra("upcoming").equals("true"))
+                upcoming = true;
+            else
+                upcoming = false;
         }
         else if(intent.hasExtra("remove")) {
             hasExtra = false;
+            if(intent.getStringExtra("upcoming").equals("true"))
+                upcoming = true;
+            else
+                upcoming = false;
         }
-        goToFragment(new DashboardFragment());
+
+        Log.d("upcoming", String.valueOf(upcoming));
+
+        if(upcoming)
+            goToFragment(new DashboardFragment());
+        else
+            goToFragment(new PastEventsFragment());
 
         menuAdapter.setViewSelected(0, true);
         setTitle(titles.get(0));

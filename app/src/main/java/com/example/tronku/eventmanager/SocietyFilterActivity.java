@@ -37,6 +37,7 @@ public class SocietyFilterActivity extends AppCompatActivity {
     @BindView(R.id.societyNameView) RecyclerView societyRecyclerView;
     private ArrayList<Society> societyList = new ArrayList<>();
     private SocietyAdapter adapter;
+    private boolean upcoming = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,9 @@ public class SocietyFilterActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         adapter = new SocietyAdapter(this, societyList);
+        if(getIntent().getStringExtra("upcoming").equals("false"))
+            upcoming = false;
+
         fillData();
     }
 
@@ -93,7 +97,7 @@ public class SocietyFilterActivity extends AppCompatActivity {
         queue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<JSONObject>() {
             @Override
             public void onRequestFinished(Request<JSONObject> request) {
-                adapter.updateData(societyList);
+                adapter.updateData(societyList, upcoming);
                 societyRecyclerView.setLayoutManager(new LinearLayoutManager(SocietyFilterActivity.this));
                 societyRecyclerView.setAdapter(adapter);
                 societyRecyclerView.setVisibility(View.VISIBLE);

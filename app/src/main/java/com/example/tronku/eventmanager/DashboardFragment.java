@@ -99,6 +99,7 @@ public class DashboardFragment extends Fragment {
                     public void onClick(View view) {
                         dialog.dismiss();
                         Intent society = new Intent(dialog.getContext(), SocietyFilterActivity.class);
+                        society.putExtra("upcoming", "true");
                         startActivity(society);
                     }
                 });
@@ -109,6 +110,7 @@ public class DashboardFragment extends Fragment {
                         dialog.dismiss();
                         Intent remove = new Intent(dialog.getContext(), MainActivity.class);
                         remove.putExtra("remove","true");
+                        remove.putExtra("upcoming", "true");
                         startActivity(remove);
                     }
                 });

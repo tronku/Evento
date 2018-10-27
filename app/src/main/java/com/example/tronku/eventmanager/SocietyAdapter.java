@@ -23,6 +23,7 @@ public class SocietyAdapter extends RecyclerView.Adapter<SocietyAdapter.ViewHold
 
     private Context context;
     private ArrayList<Society> societyList;
+    private boolean upcoming;
 
     public SocietyAdapter(Context context, ArrayList<Society> societyList) {
         this.context = context;
@@ -48,6 +49,12 @@ public class SocietyAdapter extends RecyclerView.Adapter<SocietyAdapter.ViewHold
                 filter.putExtra("name", societyList.get(i).getName());
                 filter.putExtra("logo", societyList.get(i).getUri());
                 filter.putExtra("society", societyList.get(i).getId());
+                if(upcoming) {
+                    filter.putExtra("upcoming", "true");
+                }
+                else
+                    filter.putExtra("upcoming", "false");
+
                 filter.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.startActivity(filter);
             }
@@ -75,8 +82,9 @@ public class SocietyAdapter extends RecyclerView.Adapter<SocietyAdapter.ViewHold
         }
     }
 
-    public void updateData(ArrayList<Society> list){
+    public void updateData(ArrayList<Society> list, boolean upcoming){
         societyList = list;
+        this.upcoming = upcoming;
         notifyDataSetChanged();
     }
 }

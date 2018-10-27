@@ -6,4 +6,5 @@ public class API {
     public static final String OTP_API = "http://13.126.64.67/api/auth/verify";
     public static final String SOCIETY_API = "http://13.126.64.67/api/societys";
     public static final String EVENTS_API = "http://13.126.64.67/api/events/upcoming";
+    public static final String PAST_API = "http://13.126.64.67/api/events/past";
 }
