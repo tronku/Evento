@@ -1,15 +1,21 @@
 package com.example.tronku.eventmanager;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -32,13 +38,21 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
-        viewHolder.societyName.setText("Developer Student Clubs");
-        viewHolder.eventName.setText("Python Workshop");
-        viewHolder.eventTime.setText("4:30 - 6:30 pm");
-        viewHolder.startDate.setText("24");
-        viewHolder.startMonth.setText("OCT");
-        //int colorId = getLayerColor(i);
-        //viewHolder.colorLayer.setBackgroundColor(getLayerColor(i));
+        viewHolder.societyName.setText(eventArrayList.get(i).getSocietyName());
+        viewHolder.eventName.setText(eventArrayList.get(i).getEventName());
+
+        String timeString = getTime(eventArrayList.get(i).getStartDateTime()) + "- " + getTime(eventArrayList.get(i).getEndDateTime());
+        viewHolder.eventTime.setText(timeString);
+
+        String startDate = getDate(eventArrayList.get(i).getStartDateTime());
+        String startMon =  getMonth(eventArrayList.get(i).getStartDateTime()).substring(0,3).toUpperCase();
+        viewHolder.startDate.setText(startDate);
+        viewHolder.startMonth.setText(startMon);
+
+        Random random = new Random();
+        ColorFilter cf = new PorterDuffColorFilter(Color.rgb(random.nextInt(255), random.nextInt(255), random.nextInt(255)),PorterDuff.Mode.OVERLAY);
+        viewHolder.backPic.setColorFilter(cf);
+
         viewHolder.singleEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -49,13 +63,14 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return 5;
+        return eventArrayList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView societyName, eventName, eventTime, startDate, startMonth;
         private CardView singleEvent;
         private View colorLayer;
+        private ImageView backPic;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -66,21 +81,35 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             startDate = itemView.findViewById(R.id.startDate);
             startMonth = itemView.findViewById(R.id.startMonth);
             colorLayer = itemView.findViewById(R.id.colorLayer);
+            backPic = itemView.findViewById(R.id.backgroundPic);
         }
     }
 
-    public int getLayerColor(int i) {
-        int randomColorCode = i%2;
-        if(randomColorCode==0)
-            return R.color.orangeLayer;
-        //else if(randomColorCode==1)
-          //  return R.color.greenLayer;
-        /*else if(randomColorCode==2)
-            return R.color.orangeLayer;
-        else if(randomColorCode==3)
-            return R.color.purpleLayer;*/
+    public void updateEvents(ArrayList<Event> list){
+        this.eventArrayList = list;
+        notifyDataSetChanged();
+    }
 
-        else
-            return R.color.colorAccentDark;
+    private String getTime(String startFullDate) {
+        int hr = Integer.parseInt(startFullDate.substring(11,13));
+        int min = Integer.parseInt(startFullDate.substring(14,16));
+        String time = hr%12 + ":" + min + " " + ((hr>=12) ? "PM" : "AM");
+        return time;
+    }
+
+    private String getDate(String startFullDate) {
+        return startFullDate.substring(8,10);
+    }
+
+    private String getMonth(String startFullDate) {
+        String s;
+        int monthNo = Integer.parseInt(startFullDate.substring(5,7)) - 1;
+        String month = null;
+        DateFormatSymbols dfs = new DateFormatSymbols();
+        String[] months = dfs.getMonths();
+        if (monthNo >= 0 && monthNo <= 11 ) {
+            month = months[monthNo];
+        }
+        return month;
     }
 }

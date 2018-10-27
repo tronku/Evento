@@ -1,17 +1,17 @@
 package com.example.tronku.eventmanager;
 
 public class Event {
-    private String societyName, eventName, eventDesc, dateTime, imgUrl;
+    private String societyName, eventName, eventDesc, startDateTime, endDateTime, imgUrl, contact_person, contact_no;
 
-    public Event() {
-    }
-
-    public Event(String societyName, String eventName, String eventDesc, String dateTime, String imgUrl) {
+    public Event(String societyName, String eventName, String eventDesc, String startDateTime, String endDateTime, String imgUrl, String contact_person, String contact_no) {
         this.societyName = societyName;
         this.eventName = eventName;
         this.eventDesc = eventDesc;
-        this.dateTime = dateTime;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
         this.imgUrl = imgUrl;
+        this.contact_person = contact_person;
+        this.contact_no = contact_no;
     }
 
     public String getSocietyName() {
@@ -38,12 +38,20 @@ public class Event {
         this.eventDesc = eventDesc;
     }
 
-    public String getDateTime() {
-        return dateTime;
+    public String getStartDateTime() {
+        return startDateTime;
     }
 
-    public void setDateTime(String dateTime) {
-        this.dateTime = dateTime;
+    public void setStartDateTime(String startDateTime) {
+        this.startDateTime = startDateTime;
+    }
+
+    public String getEndDateTime() {
+        return endDateTime;
+    }
+
+    public void setEndDateTime(String endDateTime) {
+        this.endDateTime = endDateTime;
     }
 
     public String getImgUrl() {
@@ -52,5 +60,21 @@ public class Event {
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
+    }
+
+    public String getContact_person() {
+        return contact_person;
+    }
+
+    public void setContact_person(String contact_person) {
+        this.contact_person = contact_person;
+    }
+
+    public String getContact_no() {
+        return contact_no;
+    }
+
+    public void setContact_no(String contact_no) {
+        this.contact_no = contact_no;
     }
 }

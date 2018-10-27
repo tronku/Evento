@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
     private ViewHolder viewHolder;
     private Intent intent;
     private ArrayList<String> titles = new ArrayList<>();
-    private ArrayList<String> societies = new ArrayList<>();
+    private boolean hasExtra = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +41,11 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
         handleDrawer();
         handleMenu();
 
-        if(intent.hasExtra("selectedSocieties")){
-            societies = intent.getStringArrayListExtra("selectedSocieties");
-
+        if(intent.hasExtra("name")){
+            hasExtra = true;
+        }
+        else if(intent.hasExtra("remove")) {
+            hasExtra = false;
         }
         goToFragment(new DashboardFragment());
 
@@ -78,9 +81,13 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
 
     private void goToFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        Bundle args = new Bundle();
-        args.putStringArrayList("societies", societies);
-        fragment.setArguments(args);
+        if(hasExtra) {
+            Bundle args = new Bundle();
+            args.putString("name", intent.getStringExtra("name"));
+            args.putString("society", intent.getStringExtra("society"));
+            args.putString("logo", intent.getStringExtra("logo"));
+            fragment.setArguments(args);
+        }
         transaction.replace(R.id.container, fragment).commit();
     }
 
@@ -135,5 +142,11 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
             name = findViewById(R.id.nameHeader);
             email = findViewById(R.id.emailHeader);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finishAffinity();
     }
 }

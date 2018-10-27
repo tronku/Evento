@@ -2,14 +2,22 @@ package com.example.tronku.eventmanager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class SocietyAdapter extends RecyclerView.Adapter<SocietyAdapter.ViewHolder> {
 
@@ -30,19 +38,18 @@ public class SocietyAdapter extends RecyclerView.Adapter<SocietyAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
-        viewHolder.societyName.setText(societyList.get(viewHolder.getAdapterPosition()).getName());
+    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
+        viewHolder.societyName.setText(societyList.get(i).getName());
+        Picasso.get().load(societyList.get(i).getUri()).placeholder(context.getResources().getDrawable(R.drawable.placeholder)).into(viewHolder.societyLogo);
         viewHolder.societyItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(societyList.get(viewHolder.getAdapterPosition()).isSelected()) {
-                    societyList.get(viewHolder.getAdapterPosition()).setSelected(false);
-                    viewHolder.societyName.setTextColor(context.getResources().getColor(android.R.color.white));
-                }
-                else{
-                    societyList.get(viewHolder.getAdapterPosition()).setSelected(true);
-                    viewHolder.societyName.setTextColor(context.getResources().getColor(R.color.orangeLayer));
-                }
+                Intent filter = new Intent(context, MainActivity.class);
+                filter.putExtra("name", societyList.get(i).getName());
+                filter.putExtra("logo", societyList.get(i).getUri());
+                filter.putExtra("society", societyList.get(i).getId());
+                filter.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                context.startActivity(filter);
             }
         });
     }
@@ -55,25 +62,17 @@ public class SocietyAdapter extends RecyclerView.Adapter<SocietyAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView societyName;
-        private RelativeLayout societyItem;
+        private CardView societyItem;
+        private TextView societyType;
+        private CircleImageView societyLogo;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             societyName = itemView.findViewById(R.id.societyName);
             societyItem = itemView.findViewById(R.id.societyItem);
+            societyType = itemView.findViewById(R.id.societyType);
+            societyLogo = itemView.findViewById(R.id.logo);
         }
-    }
-
-    public void filterData() {
-
-        for(int i=0;i<societyList.size();i++) {
-            if(societyList.get(i).isSelected())
-                selectedSociety.add(societyList.get(i).getName());
-        }
-
-        Intent filter = new Intent(context, MainActivity.class);
-        filter.putStringArrayListExtra("selectedSocieties", selectedSociety);
-        context.startActivity(filter);
     }
 
     public void updateData(ArrayList<Society> list){

@@ -224,12 +224,10 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        queue.cancelAll("auth");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        queue.cancelAll("auth");
     }
 }

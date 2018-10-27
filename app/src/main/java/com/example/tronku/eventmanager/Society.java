@@ -1,15 +1,15 @@
 package com.example.tronku.eventmanager;
 
 public class Society {
-    private String name;
-    private boolean isSelected;
+    private String name, uri, id;
 
     public Society() {
     }
 
-    public Society(String name, boolean isSelected) {
+    public Society(String name, String uri, String id) {
         this.name = name;
-        this.isSelected = isSelected;
+        this.uri = uri;
+        this.id = id;
     }
 
     public String getName() {
@@ -20,11 +20,20 @@ public class Society {
         this.name = name;
     }
 
-    public boolean isSelected() {
-        return isSelected;
+    public String getUri() {
+        return uri;
     }
 
-    public void setSelected(boolean selected) {
-        isSelected = selected;
+    public void setUri(String uri) {
+        this.uri = uri;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
 }

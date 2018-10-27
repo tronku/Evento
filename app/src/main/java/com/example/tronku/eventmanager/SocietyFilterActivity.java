@@ -35,7 +35,6 @@ import butterknife.ButterKnife;
 public class SocietyFilterActivity extends AppCompatActivity {
 
     @BindView(R.id.societyNameView) RecyclerView societyRecyclerView;
-    @BindView(R.id.apply) Button applyButton;
     private ArrayList<Society> societyList = new ArrayList<>();
     private SocietyAdapter adapter;
 
@@ -47,17 +46,6 @@ public class SocietyFilterActivity extends AppCompatActivity {
 
         adapter = new SocietyAdapter(this, societyList);
         fillData();
-
-        applyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                filter();
-            }
-        });
-    }
-
-    private void filter() {
-        adapter.filterData();
     }
 
     public void fillData() {
@@ -71,8 +59,9 @@ public class SocietyFilterActivity extends AppCompatActivity {
                     try {
                         JSONObject society = response.getJSONObject(i);
                         String name = society.getString("name");
-                        Log.d("society", name);
-                        societyList.add(new Society(name, false));
+                        String uri = society.getString("logo");
+                        String societyId = society.getString("id");
+                        societyList.add(new Society(name, uri, societyId));
 
                     } catch (JSONException e) {
                         e.printStackTrace();
