@@ -1,6 +1,7 @@
 package com.example.tronku.eventmanager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
@@ -37,7 +38,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
         viewHolder.societyName.setText(eventArrayList.get(i).getSocietyName());
         viewHolder.eventName.setText(eventArrayList.get(i).getEventName());
 
@@ -57,6 +58,19 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             @Override
             public void onClick(View view) {
                 Toast.makeText(context, "Clicked", Toast.LENGTH_SHORT).show();
+                Intent event = new Intent(context, EventActivity.class);
+                event.putExtra("societyName", eventArrayList.get(i).getSocietyName());
+                event.putExtra("eventName", eventArrayList.get(i).getEventName());
+                event.putExtra("eventDesc", eventArrayList.get(i).getEventDesc());
+                event.putExtra("eventStartTime", eventArrayList.get(i).getStartDateTime());
+                event.putExtra("eventEndTime", eventArrayList.get(i).getEndDateTime());
+                event.putExtra("eventVenue", eventArrayList.get(i).getVenue());
+                event.putExtra("contact_person", eventArrayList.get(i).getContact_person());
+                event.putExtra("contact_number", eventArrayList.get(i).getContact_no());
+                event.putExtra("image", eventArrayList.get(i).getImgUrl());
+                event.putExtra("societyLogo", eventArrayList.get(i).getSocietyLogo());
+                event.putExtra("regLink", eventArrayList.get(i).getRegLink());
+                context.startActivity(event);
             }
         });
     }
@@ -69,7 +83,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView societyName, eventName, eventTime, startDate, startMonth;
         private CardView singleEvent;
-        private View colorLayer;
         private ImageView backPic;
 
         public ViewHolder(@NonNull View itemView) {
@@ -80,7 +93,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             eventTime = itemView.findViewById(R.id.timeEvent);
             startDate = itemView.findViewById(R.id.startDate);
             startMonth = itemView.findViewById(R.id.startMonth);
-            colorLayer = itemView.findViewById(R.id.colorLayer);
             backPic = itemView.findViewById(R.id.backgroundPic);
         }
     }

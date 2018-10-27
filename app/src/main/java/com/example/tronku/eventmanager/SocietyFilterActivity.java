@@ -61,7 +61,11 @@ public class SocietyFilterActivity extends AppCompatActivity {
                         String name = society.getString("name");
                         String uri = society.getString("logo");
                         String societyId = society.getString("id");
-                        societyList.add(new Society(name, uri, societyId));
+                        String dept = society.getString("department_name");
+                        String type = society.getString("type");
+                        String phone = society.getString("phone");
+                        String email = society.getString("email");
+                        societyList.add(new Society(name, uri, societyId, email, type, dept, phone));
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -84,6 +88,7 @@ public class SocietyFilterActivity extends AppCompatActivity {
         };
 
         RequestQueue queue = Volley.newRequestQueue(this);
+        request.setShouldCache(true);
         queue.add(request);
         queue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<JSONObject>() {
             @Override

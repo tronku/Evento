@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:allowBackup="true"
@@ -27,7 +28,8 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".OTPActivity" />
         <activity android:name=".SocietyFilterActivity" />
-        <activity android:name=".EventActivity"></activity>
+        <activity android:name=".EventActivity" />
+        <activity android:name=".RegisterEventActivity"></activity>
     </application>
 
 </manifest>

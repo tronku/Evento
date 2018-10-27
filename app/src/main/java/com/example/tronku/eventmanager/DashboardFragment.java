@@ -155,8 +155,12 @@ public class DashboardFragment extends Fragment {
                         String endFullDate = event.getString("end_day");
                         String contact_person = event.getString("contact_person");
                         String contact_no = event.getString("contact_number");
+                        String venue = event.getString("venue");
+                        String logo = event.getString("society_logo");
+                        String regLink = event.getString("registration_link");
 
-                        eventList.add(new Event(society, name, desc, startFullDate, endFullDate, image, contact_person, contact_no));
+
+                        eventList.add(new Event(society, name, desc, startFullDate, endFullDate, image, contact_person, contact_no, venue, logo, regLink));
 
                     } catch (JSONException e) {
                         e.printStackTrace();

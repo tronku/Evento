@@ -1,9 +1,9 @@
 package com.example.tronku.eventmanager;
 
 public class Event {
-    private String societyName, eventName, eventDesc, startDateTime, endDateTime, imgUrl, contact_person, contact_no;
+    private String societyName, eventName, eventDesc, startDateTime, endDateTime, imgUrl, contact_person, contact_no, venue, societyLogo, regLink;
 
-    public Event(String societyName, String eventName, String eventDesc, String startDateTime, String endDateTime, String imgUrl, String contact_person, String contact_no) {
+    public Event(String societyName, String eventName, String eventDesc, String startDateTime, String endDateTime, String imgUrl, String contact_person, String contact_no, String venue, String societyLogo, String regLink) {
         this.societyName = societyName;
         this.eventName = eventName;
         this.eventDesc = eventDesc;
@@ -12,6 +12,9 @@ public class Event {
         this.imgUrl = imgUrl;
         this.contact_person = contact_person;
         this.contact_no = contact_no;
+        this.venue = venue;
+        this.societyLogo = societyLogo;
+        this.regLink = regLink;
     }
 
     public String getSocietyName() {
@@ -76,5 +79,29 @@ public class Event {
 
     public void setContact_no(String contact_no) {
         this.contact_no = contact_no;
+    }
+
+    public String getVenue() {
+        return venue;
+    }
+
+    public void setVenue(String venue) {
+        this.venue = venue;
+    }
+
+    public String getSocietyLogo() {
+        return societyLogo;
+    }
+
+    public void setSocietyLogo(String societyLogo) {
+        this.societyLogo = societyLogo;
+    }
+
+    public String getRegLink() {
+        return regLink;
+    }
+
+    public void setRegLink(String regLink) {
+        this.regLink = regLink;
     }
 }

@@ -23,7 +23,6 @@ public class SocietyAdapter extends RecyclerView.Adapter<SocietyAdapter.ViewHold
 
     private Context context;
     private ArrayList<Society> societyList;
-    private ArrayList<String> selectedSociety = new ArrayList<>();
 
     public SocietyAdapter(Context context, ArrayList<Society> societyList) {
         this.context = context;
@@ -41,6 +40,7 @@ public class SocietyAdapter extends RecyclerView.Adapter<SocietyAdapter.ViewHold
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
         viewHolder.societyName.setText(societyList.get(i).getName());
         Picasso.get().load(societyList.get(i).getUri()).placeholder(context.getResources().getDrawable(R.drawable.placeholder)).into(viewHolder.societyLogo);
+        viewHolder.societyType.setText(societyList.get(i).getType());
         viewHolder.societyItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

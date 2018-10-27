@@ -1,17 +1,276 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".EventActivity">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="100dp"
+        android:background="@android:color/black"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="260dp"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Workshop Name"
+                android:id="@+id/event_Name"
+                android:textSize="26sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@android:color/white"
+                android:fontFamily="@font/comfortaabold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:text="SOCIETY NAME"
+                android:layout_marginTop="2dp"
+                android:id="@+id/society_Name"
+                android:fontFamily="@font/robotoregular"
+                android:textSize="16sp"
+                android:maxLines="1"
+                android:ellipsize="end"/>
+
+        </LinearLayout>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_vertical|end"
+            android:id="@+id/society_Logo"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="14dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/placeholder" />
+
+    </RelativeLayout>
+    
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="20dp"
+            android:background="@android:color/white"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_gravity="center_horizontal"
+                app:cardCornerRadius="15dp"
+                android:layout_marginTop="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginStart="30dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/date"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/dates"
+                            android:fontFamily="@font/robotoregular"
+                            android:text="24 - 27 Oct, 2018"
+                            android:layout_marginStart="20dp"
+                            android:textSize="20sp"
+                            android:textColor="@android:color/black"/>
+
+                    </LinearLayout>
 
 
-    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
 
-</android.support.constraint.ConstraintLayout>
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/clock"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/timings"
+                            android:fontFamily="@font/robotoregular"
+                            android:text="4:30 PM - 6:30 PM"
+                            android:layout_marginStart="20dp"
+                            android:textSize="20sp"
+                            android:textColor="@android:color/black"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/location"/>
+
+                        <TextView
+                            android:layout_width="250dp"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/venue"
+                            android:fontFamily="@font/robotoregular"
+                            android:layout_gravity="center_vertical"
+                            android:text="Lab 7, AB 3"
+                            android:layout_marginStart="20dp"
+                            android:textSize="20sp"
+                            android:textColor="@android:color/black"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="40dp"
+                app:cardCornerRadius="15dp"
+                android:layout_height="200dp">
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="14dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Workshop Details"
+                        android:fontFamily="@font/robotoregular"
+                        android:textColor="@android:color/black"
+                        android:id="@+id/desc"
+                        android:textSize="20sp"/>
+
+                </ScrollView>
+
+            </android.support.v7.widget.CardView>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_marginTop="30dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/placeholder"
+                    android:scaleType="centerCrop"
+                    android:id="@+id/eventPic"/>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_height="70dp"
+                    android:id="@+id/regButton"
+                    android:fontFamily="@font/robotothin"
+                    android:text="REGISTER NOW !"
+                    android:textSize="24sp"
+                    android:background="@drawable/button"
+                    android:textColor="@android:color/white"/>
+
+            </FrameLayout>
+            
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                app:cardCornerRadius="15dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp">
+                
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="6dp">
+                    
+                    <ImageView
+                        android:layout_width="60dp"
+                        android:layout_height="80dp"
+                        android:src="@drawable/smartphone"
+                        android:layout_centerVertical="true"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Contact Person"
+                        android:textSize="20sp"
+                        android:textColor="@android:color/black"
+                        android:layout_marginStart="80dp"
+                        android:layout_marginTop="10dp"
+                        android:id="@+id/contactPerson"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Contact Number"
+                        android:textSize="20sp"
+                        android:id="@+id/contactNumber"
+                        android:textColor="@android:color/black"
+                        android:layout_marginStart="80dp"
+                        android:layout_below="@id/contactPerson"
+                        android:layout_marginTop="4dp"/>
+
+                    <TextView
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:background="@color/cardViewBg"
+                        android:text="CALL\nNOW"
+                        android:id="@+id/callNow"
+                        android:textSize="22sp"
+                        android:textColor="@color/colorAccent"
+                        android:layout_alignParentEnd="true"
+                        android:gravity="center"
+                        android:layout_centerVertical="true"/>
+                    
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+            
+        </LinearLayout>
+        
+    </ScrollView>
+
+</LinearLayout>

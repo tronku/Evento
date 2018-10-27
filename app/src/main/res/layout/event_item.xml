@@ -30,19 +30,16 @@
                 android:src="@drawable/workshop"
                 android:id="@+id/backgroundPic"/>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/colorLayer"
-                android:background="@color/colorAccentDark"
-                android:alpha="0.7"/>
-
             <TextView
                 android:layout_width="240dp"
                 android:layout_height="wrap_content"
                 android:text="SOCIETY"
                 android:textAllCaps="true"
                 android:maxLines="1"
+                android:shadowColor="@android:color/black"
+                android:shadowDx="4.0"
+                android:shadowDy="4.0"
+                android:shadowRadius="4.0"
                 android:ellipsize="end"
                 android:id="@+id/societyEvent"
                 android:textColor="@android:color/white"
@@ -89,18 +86,31 @@
             android:layout_marginTop="4dp"
             android:textColor="@android:color/black"/>
 
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableStart="@drawable/clock"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="14dp"
             android:gravity="center_vertical"
-            android:textSize="15sp"
-            android:textColor="@android:color/black"
-            android:text="4:30 - 6:30 pm"
-            android:id="@+id/timeEvent"
-            android:drawablePadding="10dp"/>
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:src="@drawable/clock"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:gravity="center_vertical"
+                android:textSize="15sp"
+                android:textColor="@android:color/black"
+                android:text="4:30 - 6:30 pm"
+                android:id="@+id/timeEvent"
+                android:drawablePadding="10dp"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
