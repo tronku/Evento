@@ -14,11 +14,9 @@
         android:roundIcon="@drawable/events"
         android:supportsRtl="true"
         android:theme="@style/AppThemeNoBar">
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/events" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
@@ -44,7 +42,7 @@
         <activity android:name=".OTPActivity" />
         <activity android:name=".SocietyFilterActivity" />
         <activity android:name=".EventActivity" />
-        <activity android:name=".RegisterEventActivity"></activity>
+        <activity android:name=".RegisterEventActivity" />
     </application>
 
 </manifest>

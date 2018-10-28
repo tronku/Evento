@@ -42,7 +42,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         viewHolder.societyName.setText(eventArrayList.get(i).getSocietyName());
         viewHolder.eventName.setText(eventArrayList.get(i).getEventName());
 
-        String timeString = getTime(eventArrayList.get(i).getStartDateTime()) + "- " + getTime(eventArrayList.get(i).getEndDateTime());
+        String timeString = getTime(eventArrayList.get(i).getStartDateTime()) + " - " + getTime(eventArrayList.get(i).getEndDateTime());
         viewHolder.eventTime.setText(timeString);
 
         String startDate = getDate(eventArrayList.get(i).getStartDateTime());

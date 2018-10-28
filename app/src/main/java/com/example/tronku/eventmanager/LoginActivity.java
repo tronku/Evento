@@ -1,11 +1,15 @@
 package com.example.tronku.eventmanager;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -45,6 +50,7 @@ public class LoginActivity extends AppCompatActivity {
     private String email_mobno, password;
     private View view;
     private SharedPreferences pref;
+    private static final int REQUEST_CODE = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +103,14 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
             }
         });
+
+        askPermission();
+    }
+
+    private void askPermission() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.CALL_PHONE}, REQUEST_CODE);
+        }
     }
 
     private void loginUser(String email_mobno, String password) {
@@ -233,5 +247,18 @@ public class LoginActivity extends AppCompatActivity {
     {
         String command = "ping -c 1 google.com";
         return (Runtime.getRuntime().exec(command).waitFor() == 0);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE:
+                if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                }
+                else {
+                    Toast.makeText(LoginActivity.this, "Call Permission denied!", Toast.LENGTH_SHORT).show();
+                }
+        }
     }
 }

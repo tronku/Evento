@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
                 goToFragment(new PastEventsFragment());
                 break;
             default:
-                goToFragment(new DashboardFragment());
+                goToFragment(new AboutFragment());
                 break;
         }
 

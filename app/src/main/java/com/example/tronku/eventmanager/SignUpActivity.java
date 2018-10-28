@@ -48,7 +48,6 @@ public class SignUpActivity extends AppCompatActivity {
     @BindView(R.id.signupButton)Button signupButton;
     @BindView(R.id.loader)ProgressBar loader;
     @BindView(R.id.layer)View layer;
-    @BindView(R.id.error_result)TextView result;
 
     private String email, password, name, mobile;
     private RequestQueue queue;
@@ -162,7 +161,6 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 Log.d("error",volleyError.toString());
-                result.setText(volleyError.toString());
                 if(volleyError.networkResponse.statusCode==400){
                     String json = new String(volleyError.networkResponse.data);
                     try {
