@@ -45,9 +45,12 @@ public class SocietyFilterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_society_filter);
         ButterKnife.bind(this);
 
-        adapter = new SocietyAdapter(this, societyList);
-        if(getIntent().getStringExtra("upcoming").equals("false"))
+        if(getIntent().hasExtra("upcoming"))
+            upcoming = true;
+        else
             upcoming = false;
+
+        adapter = new SocietyAdapter(this, societyList, upcoming);
 
         fillData();
     }
@@ -97,7 +100,7 @@ public class SocietyFilterActivity extends AppCompatActivity {
         queue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<JSONObject>() {
             @Override
             public void onRequestFinished(Request<JSONObject> request) {
-                adapter.updateData(societyList, upcoming);
+                adapter.updateData(societyList);
                 societyRecyclerView.setLayoutManager(new LinearLayoutManager(SocietyFilterActivity.this));
                 societyRecyclerView.setAdapter(adapter);
                 societyRecyclerView.setVisibility(View.VISIBLE);

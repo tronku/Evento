@@ -44,28 +44,22 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
 
         if(intent.hasExtra("name")){
             hasExtra = true;
-            if(intent.getStringExtra("upcoming").equals("true"))
-                upcoming = true;
-            else
-                upcoming = false;
         }
-        else if(intent.hasExtra("remove")) {
-            hasExtra = false;
-            if(intent.getStringExtra("upcoming").equals("true"))
-                upcoming = true;
-            else
-                upcoming = false;
-        }
+        if(intent.hasExtra("upcoming"))
+            upcoming = true;
+        if(intent.hasExtra("past"))
+            upcoming = false;
 
-        Log.d("upcoming", String.valueOf(upcoming));
-
-        if(upcoming)
+        if(upcoming) {
             goToFragment(new DashboardFragment());
-        else
+            menuAdapter.setViewSelected(0, true);
+            setTitle(titles.get(0));
+        }
+        else {
             goToFragment(new PastEventsFragment());
-
-        menuAdapter.setViewSelected(0, true);
-        setTitle(titles.get(0));
+            menuAdapter.setViewSelected(1, true);
+            setTitle(titles.get(1));
+        }
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         viewHolder.name.setText(pref.getString("name", "Me"));

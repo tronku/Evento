@@ -93,7 +93,7 @@ public class PastEventsFragment extends Fragment {
                     public void onClick(View view) {
                         dialog.dismiss();
                         Intent society = new Intent(dialog.getContext(), SocietyFilterActivity.class);
-                        society.putExtra("upcoming", "false");
+                        society.putExtra("past", "true");
                         startActivity(society);
                     }
                 });
@@ -104,7 +104,7 @@ public class PastEventsFragment extends Fragment {
                         dialog.dismiss();
                         Intent remove = new Intent(dialog.getContext(), MainActivity.class);
                         remove.putExtra("remove","true");
-                        remove.putExtra("upcoming", "true");
+                        remove.putExtra("past", "true");
                         startActivity(remove);
                     }
                 });

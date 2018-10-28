@@ -217,10 +217,4 @@
         app:layout_constraintRight_toRightOf="parent"
         android:id="@+id/loader"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="error"
-        android:id="@+id/error_result"/>
-
 </android.support.constraint.ConstraintLayout>

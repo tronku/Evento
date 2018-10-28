@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -29,6 +30,7 @@ public class OTPActivity extends AppCompatActivity {
 
     @BindView(R.id.validate)Button validate;
     @BindView(R.id.otpView)PinView otpEditView;
+    @BindView(R.id.resend) TextView resendButton;
 
     private String otp;
     private View view;
@@ -55,6 +57,39 @@ public class OTPActivity extends AppCompatActivity {
                     validate(otp);
             }
         });
+
+        resendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resend();
+            }
+        });
+    }
+
+    private void resend() {
+        RequestQueue queue;
+        JSONObject otpResend = new JSONObject();
+        try{
+            otpResend.put("email", getIntent().getStringExtra("email"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, API.RESEND_API, otpResend,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        //setting timer
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        queue = Volley.newRequestQueue(OTPActivity.this);
+        queue.add(request);
     }
 
     private void validate(String otp) {
@@ -64,7 +99,6 @@ public class OTPActivity extends AppCompatActivity {
         try{
             otpValid.put("otp", otp);
             otpValid.put("email", getIntent().getStringExtra("email"));
-
         } catch (JSONException e) {
             e.printStackTrace();
         }

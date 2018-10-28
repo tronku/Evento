@@ -134,7 +134,7 @@ public class DashboardFragment extends Fragment {
         eventList.clear();
         String url;
         if(hasExtra){
-            url = "http://13.126.64.67/api/society/" + getArguments().getString("society") + "/events";
+            url = "http://13.126.64.67/api/society/" + getArguments().getString("society") + "/events/upcoming";
         }
         else
             url = API.EVENTS_API;

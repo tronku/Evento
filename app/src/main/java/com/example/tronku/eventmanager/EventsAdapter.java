@@ -50,9 +50,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         viewHolder.startDate.setText(startDate);
         viewHolder.startMonth.setText(startMon);
 
-        Random random = new Random();
-        ColorFilter cf = new PorterDuffColorFilter(Color.rgb(random.nextInt(255), random.nextInt(255), random.nextInt(255)),PorterDuff.Mode.OVERLAY);
-        viewHolder.backPic.setColorFilter(cf);
+        getColor(viewHolder.layer);
 
         viewHolder.singleEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,7 +81,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView societyName, eventName, eventTime, startDate, startMonth;
         private CardView singleEvent;
-        private ImageView backPic;
+        private View layer;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -93,7 +91,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             eventTime = itemView.findViewById(R.id.timeEvent);
             startDate = itemView.findViewById(R.id.startDate);
             startMonth = itemView.findViewById(R.id.startMonth);
-            backPic = itemView.findViewById(R.id.backgroundPic);
+            layer = itemView.findViewById(R.id.layer);
         }
     }
 
@@ -123,5 +121,25 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             month = months[monthNo];
         }
         return month;
+    }
+
+    private void getColor(View layer) {
+        Random random = new Random();
+        int randno = random.nextInt(5);
+        if(randno==0){
+            layer.setBackgroundColor(context.getResources().getColor(R.color.orangeLayer));
+        }
+        else if(randno==1){
+            layer.setBackgroundColor(context.getResources().getColor(R.color.greenLayer));
+        }
+        else if(randno==2){
+            layer.setBackgroundColor(context.getResources().getColor(R.color.purpleLayer));
+        }
+        else if(randno==3){
+            layer.setBackgroundColor(context.getResources().getColor(R.color.redLayer));
+        }
+        else {
+            layer.setBackgroundColor(context.getResources().getColor(R.color.colorAccentDark));
+        }
     }
 }
