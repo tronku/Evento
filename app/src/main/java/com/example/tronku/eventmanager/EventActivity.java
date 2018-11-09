@@ -1,29 +1,46 @@
 package com.example.tronku.eventmanager;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.icu.util.Calendar;
 import android.icu.util.LocaleData;
 import android.net.Uri;
+import android.preference.PreferenceManager;
+import android.provider.AlarmClock;
+import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.MenuItemHoverListener;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,14 +49,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class EventActivity extends AppCompatActivity {
 
-    @BindView(R.id.event_Name)
-    TextView eventName;
-    @BindView(R.id.society_Name)
-    TextView societyName;
-    @BindView(R.id.society_Logo)
-    CircleImageView societyLogo;
-    @BindView(R.id.timings)
-    TextView eventTiming;
+    @BindView(R.id.event_Name) TextView eventName;
+    @BindView(R.id.society_Name) TextView societyName;
+    @BindView(R.id.society_Logo) CircleImageView societyLogo;
+    @BindView(R.id.timings) TextView eventTiming;
     @BindView(R.id.venue)
     TextView eventVenue;
     @BindView(R.id.desc)
@@ -56,10 +69,13 @@ public class EventActivity extends AppCompatActivity {
     TextView eventContact;
     @BindView(R.id.callNow)
     TextView callNow;
+    @BindView(R.id.notif)
+    Switch notificationSwitch;
 
     private Intent intent, call;
-    private static final int REQUEST_CODE = 101;
+    private static final int REQUEST_CODE = 101, CALENDAR_CODE = 201;
     private String event, society, logo, desc, startDate, endDate, image, regLink, venue, contact_person, contact_no;
+    private int monthNo, hr, min;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +83,17 @@ public class EventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event);
         ButterKnife.bind(this);
         intent = getIntent();
+        call = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + contact_no));
 
         fillData();
         fillViews();
+
+        notificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                getPermission();
+            }
+        });
 
         regButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,15 +107,83 @@ public class EventActivity extends AppCompatActivity {
         callNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                call = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + contact_no));
                 if (ActivityCompat.checkSelfPermission(EventActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(EventActivity.this, new String[] {Manifest.permission.CALL_PHONE}, REQUEST_CODE);
-                }
-                startActivity(call);
+                    ActivityCompat.requestPermissions(EventActivity.this, new String[]{Manifest.permission.CALL_PHONE}, REQUEST_CODE);
+                } else
+                    startActivity(call);
             }
         });
 
     }
+
+    private void getPermission() {
+        if ((ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) &&
+                (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED)) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR}, CALENDAR_CODE);
+        } else {
+            addReminderInCalendar();
+        }
+    }
+
+
+    private void addReminderInCalendar() {
+        int startHour = Integer.parseInt(startDate.substring(11, 13));
+        int startMinutes = Integer.parseInt(startDate.substring(14, 16));
+        int endHour = Integer.parseInt(endDate.substring(11, 13));
+        int endMinutes = Integer.parseInt(endDate.substring(14, 16));
+
+        //Start Date
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        cal.set(java.util.Calendar.MONTH, Integer.parseInt(startDate.substring(5, 7)) - 1);
+        cal.set(java.util.Calendar.DAY_OF_MONTH, Integer.parseInt(startDate.substring(8, 10)));
+        cal.set(java.util.Calendar.YEAR, Integer.parseInt(startDate.substring(0, 4)));
+        cal.set(java.util.Calendar.HOUR_OF_DAY, startHour);
+        cal.set(java.util.Calendar.MINUTE, startMinutes);
+        cal.set(java.util.Calendar.SECOND, 0);
+        cal.set(java.util.Calendar.MILLISECOND, 0);
+
+        //End Date
+        java.util.Calendar endCal = java.util.Calendar.getInstance();
+        endCal.set(java.util.Calendar.MONTH, Integer.parseInt(endDate.substring(5, 7)) - 1);
+        endCal.set(java.util.Calendar.DAY_OF_MONTH, Integer.parseInt(endDate.substring(8, 10)));
+        endCal.set(java.util.Calendar.YEAR, Integer.parseInt(endDate.substring(0, 4)));
+        endCal.set(java.util.Calendar.HOUR_OF_DAY, endHour);
+        endCal.set(java.util.Calendar.MINUTE, endMinutes);
+        endCal.set(java.util.Calendar.SECOND, 0);
+        endCal.set(java.util.Calendar.MILLISECOND, 0);
+
+        ContentResolver cr = getContentResolver();
+        TimeZone timeZone = TimeZone.getTimeZone("Asia/Kolkata");
+
+        /** Inserting an event in calendar. **/
+        ContentValues values = new ContentValues();
+        values.put(CalendarContract.Events.CALENDAR_ID, 1);
+        values.put(CalendarContract.Events.TITLE, event);
+        values.put(CalendarContract.Events.DESCRIPTION, desc);
+        values.put(CalendarContract.Events.ALL_DAY, false);
+        values.put(CalendarContract.Events.DTSTART, cal.getTimeInMillis());
+        values.put(CalendarContract.Events.DTEND, endCal.getTimeInMillis());
+        values.put(CalendarContract.Events.EVENT_TIMEZONE, timeZone.getID());
+        values.put(CalendarContract.Events.EVENT_LOCATION, venue);
+        values.put(CalendarContract.Events.HAS_ALARM, false);
+        values.put(CalendarContract.Events.STATUS, 1);
+
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR}, CALENDAR_CODE);
+        }
+
+        Uri eventUri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
+        Toast.makeText(this, "Event added!", Toast.LENGTH_SHORT).show();
+
+        /** Adding reminder for event added. */
+        values = new ContentValues();
+        values.put(CalendarContract.Reminders.EVENT_ID, Long.parseLong(eventUri.getLastPathSegment()));
+        values.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
+        values.put(CalendarContract.Reminders.MINUTES, 10);
+        cr.insert(CalendarContract.Reminders.CONTENT_URI, values);
+    }
+
 
     private void fillViews() {
         eventName.setText(event);
@@ -121,6 +213,7 @@ public class EventActivity extends AppCompatActivity {
         }
     }
 
+
     private void fillData() {
         event = intent.getStringExtra("eventName");
         society = intent.getStringExtra("societyName");
@@ -135,11 +228,11 @@ public class EventActivity extends AppCompatActivity {
         contact_no = intent.getStringExtra("contact_number");
     }
 
+
     private String getTime(String startFullDate) {
-        int hr = Integer.parseInt(startFullDate.substring(11,13));
-        int min = Integer.parseInt(startFullDate.substring(14,16));
-        String time = hr%12 + ":" + min + " " + ((hr>=12) ? "PM" : "AM");
-        return time;
+        hr = Integer.parseInt(startFullDate.substring(11,13));
+        min = Integer.parseInt(startFullDate.substring(14,16));
+        return (hr%12 + ":" + min + " " + ((hr>=12) ? "PM" : "AM"));
     }
 
     private String getDate(String startFullDate) {
@@ -147,7 +240,7 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private String getMonth(String startFullDate) {
-        int monthNo = Integer.parseInt(startFullDate.substring(5,7)) - 1;
+        monthNo = Integer.parseInt(startFullDate.substring(5,7)) - 1;
         String month = null;
         DateFormatSymbols dfs = new DateFormatSymbols();
         String[] months = dfs.getMonths();
@@ -156,6 +249,7 @@ public class EventActivity extends AppCompatActivity {
         }
         return month;
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -167,6 +261,15 @@ public class EventActivity extends AppCompatActivity {
                 else {
                     Toast.makeText(EventActivity.this, "Permission denied!", Toast.LENGTH_SHORT).show();
                 }
+
+            case CALENDAR_CODE:
+                if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    addReminderInCalendar();
+                }
+                else {
+                    Toast.makeText(EventActivity.this, "Permission denied!", Toast.LENGTH_SHORT).show();
+                }
         }
     }
+
 }

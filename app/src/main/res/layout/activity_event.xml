@@ -65,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="20dp"
-            android:background="@drawable/strip"
+            android:background="@drawable/strip_blue"
             android:orientation="vertical">
 
             <android.support.v7.widget.CardView
@@ -157,6 +157,23 @@
 
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="16dp">
+
+                        <Switch
+                            android:layout_width="match_parent"
+                            android:layout_height="20dp"
+                            android:gravity="start|center_vertical"
+                            android:text="Set reminder for this event"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="20dp"
+                            android:id="@+id/notif"/>
+
+                    </LinearLayout>
+
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>
@@ -187,30 +204,25 @@
 
             </android.support.v7.widget.CardView>
 
-            <FrameLayout
+            <ImageView
                 android:layout_width="match_parent"
+                android:layout_marginTop="40dp"
                 android:layout_height="400dp"
-                android:layout_marginTop="30dp">
+                android:src="@drawable/placeholder"
+                android:scaleType="centerCrop"
+                android:id="@+id/eventPic"/>
 
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/placeholder"
-                    android:scaleType="centerCrop"
-                    android:id="@+id/eventPic"/>
-
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_height="70dp"
-                    android:id="@+id/regButton"
-                    android:fontFamily="@font/robotothin"
-                    android:text="REGISTER NOW !"
-                    android:textSize="24sp"
-                    android:background="@drawable/button"
-                    android:textColor="@android:color/white"/>
-
-            </FrameLayout>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:layout_height="60dp"
+                android:id="@+id/regButton"
+                android:fontFamily="@font/robotothin"
+                android:text="REGISTER NOW!"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:background="@drawable/button"
+                android:textColor="@android:color/white"/>
             
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
