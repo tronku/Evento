@@ -169,6 +169,7 @@
                             android:gravity="start|center_vertical"
                             android:text="Set reminder for this event"
                             android:layout_marginStart="10dp"
+                            android:textSize="16sp"
                             android:layout_marginEnd="20dp"
                             android:id="@+id/notif"/>
 
