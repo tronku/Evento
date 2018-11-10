@@ -70,6 +70,52 @@
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
+                android:layout_marginStart="20dp"
+                android:id="@+id/counterCard"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_height="60dp"
+                app:cardCornerRadius="12dp"
+                android:background="@android:color/white">
+
+                <cn.iwgang.countdownview.CountdownView
+                    android:id="@+id/counterView"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:isHideTimeBackground="true"
+                    app:isShowDay="true"
+                    app:isShowHour="true"
+                    app:isShowMinute="true"
+                    app:isShowSecond="true"
+                    app:isShowMillisecond="true"
+                    app:timeTextColor="@color/orangeDark"
+                    app:timeTextSize="38sp"
+                    app:isTimeTextBold="true"
+                    app:suffixGravity="bottom"
+                    app:suffixTextColor="#000000"
+                    app:suffixTextSize="14sp"
+                    app:suffixHour="h"
+                    app:suffixMinute="m"
+                    app:suffixSecond="s"
+                    app:suffixDay="d"
+                    app:suffixMillisecond="ms" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="34sp"
+                    android:id="@+id/liveText"
+                    android:visibility="invisible"
+                    android:fontFamily="@font/comfortaabold"
+                    android:textColor="@color/orangeDark"
+                    android:text="Event is LIVE!"
+                    android:layout_gravity="center"/>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
@@ -85,85 +131,85 @@
                     android:layout_marginStart="30dp"
                     android:orientation="vertical">
 
-                    <LinearLayout
+                    <TableLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                        android:layout_height="wrap_content">
 
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:src="@drawable/date"/>
+                        <TableRow
+                            android:layout_height="10dp"
+                            android:layout_width="200dp">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/dates"
-                            android:fontFamily="@font/robotoregular"
-                            android:text="24 - 27 Oct, 2018"
-                            android:layout_marginStart="20dp"
-                            android:textSize="20sp"
-                            android:textColor="@android:color/black"/>
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/date"/>
 
-                    </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/dates"
+                                android:fontFamily="@font/robotoregular"
+                                android:text="24 - 27 Oct, 2018"
+                                android:layout_marginStart="20dp"
+                                android:textSize="20sp"
+                                android:textColor="@android:color/black"/>
 
+                        </TableRow>
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:layout_marginTop="16dp"
-                        android:orientation="horizontal">
+                        <TableRow
+                            android:layout_height="10dp"
+                            android:layout_width="200dp"
+                            android:layout_marginTop="16dp">
 
-                        <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:src="@drawable/clock"/>
+                            <ImageView
+                                android:layout_width="28dp"
+                                android:layout_height="28dp"
+                                android:src="@drawable/clock"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/timings"
-                            android:fontFamily="@font/robotoregular"
-                            android:text="4:30 PM - 6:30 PM"
-                            android:layout_marginStart="20dp"
-                            android:textSize="20sp"
-                            android:textColor="@android:color/black"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/timings"
+                                android:fontFamily="@font/robotoregular"
+                                android:text="4:30 PM - 6:30 PM"
+                                android:layout_marginStart="20dp"
+                                android:textSize="20sp"
+                                android:textColor="@android:color/black"/>
 
-                    </LinearLayout>
+                        </TableRow>
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:orientation="horizontal">
+                        <TableRow
+                            android:layout_height="10dp"
+                            android:layout_width="200dp"
+                            android:layout_marginTop="16dp">
 
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:src="@drawable/location"/>
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/location"/>
 
-                        <TextView
-                            android:layout_width="250dp"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/venue"
-                            android:fontFamily="@font/robotoregular"
-                            android:layout_gravity="center_vertical"
-                            android:text="Lab 7, AB 3"
-                            android:layout_marginStart="20dp"
-                            android:textSize="20sp"
-                            android:textColor="@android:color/black"/>
+                            <TextView
+                                android:layout_width="250dp"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/venue"
+                                android:fontFamily="@font/robotoregular"
+                                android:layout_gravity="center_vertical"
+                                android:text="Lab 7, AB 3"
+                                android:layout_marginStart="20dp"
+                                android:textSize="20sp"
+                                android:textColor="@android:color/black"/>
 
-                    </LinearLayout>
+                        </TableRow>
+
+                    </TableLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="16dp">
+                        android:orientation="horizontal">
 
                         <Switch
+                            android:layout_marginTop="16dp"
                             android:layout_width="match_parent"
                             android:layout_height="20dp"
                             android:gravity="start|center_vertical"
@@ -185,12 +231,12 @@
                 android:layout_marginEnd="20dp"
                 android:layout_marginTop="40dp"
                 app:cardCornerRadius="15dp"
-                android:layout_height="200dp">
+                android:layout_height="wrap_content">
 
                 <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="14dp">
+                    android:layout_margin="16dp">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -205,25 +251,36 @@
 
             </android.support.v7.widget.CardView>
 
-            <ImageView
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_marginTop="40dp"
-                android:layout_height="400dp"
-                android:src="@drawable/placeholder"
-                android:scaleType="centerCrop"
-                android:id="@+id/eventPic"/>
+                android:layout_height="460dp"
+                app:cardCornerRadius="15dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="40dp">
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_gravity="center"
-                android:layout_height="60dp"
-                android:id="@+id/regButton"
-                android:fontFamily="@font/robotothin"
-                android:text="REGISTER NOW!"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:background="@drawable/button"
-                android:textColor="@android:color/white"/>
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="40dp"
+                    android:layout_height="400dp"
+                    android:src="@drawable/placeholder"
+                    android:scaleType="centerCrop"
+                    android:layout_gravity="top"
+                    android:id="@+id/eventPic"/>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_height="60dp"
+                    android:id="@+id/regButton"
+                    android:fontFamily="@font/robotothin"
+                    android:text="REGISTER NOW!"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:background="@drawable/button"
+                    android:textColor="@android:color/white"/>
+
+            </android.support.v7.widget.CardView>
             
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"

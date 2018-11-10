@@ -18,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.MenuItemHoverListener;
 import android.util.Log;
 import android.view.View;
@@ -72,6 +73,10 @@ public class EventActivity extends AppCompatActivity {
     TextView callNow;
     @BindView(R.id.notif)
     Switch notificationSwitch;
+    @BindView(R.id.counterCard)
+    CardView counterCard;
+    @BindView(R.id.counterView) CountdownView counterView;
+    @BindView(R.id.liveText) TextView liveText;
 
     private Intent intent, call;
     private static final int REQUEST_CODE = 101, CALENDAR_CODE = 201;
@@ -89,7 +94,15 @@ public class EventActivity extends AppCompatActivity {
 
         fillData();
         fillViews();
-        checkSwitchValidity();
+        checkValidityAndStartCounter();
+
+        counterView.setOnCountdownEndListener(new CountdownView.OnCountdownEndListener() {
+            @Override
+            public void onEnd(CountdownView cv) {
+                counterView.setVisibility(View.GONE);
+                liveText.setVisibility(View.VISIBLE);
+            }
+        });
 
         notificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -121,7 +134,8 @@ public class EventActivity extends AppCompatActivity {
 
     }
 
-    private void checkSwitchValidity() {
+
+    private void checkValidityAndStartCounter() {
         java.util.Calendar current = java.util.Calendar.getInstance();
         java.util.Calendar event = java.util.Calendar.getInstance();
         event.set(java.util.Calendar.MONTH, Integer.parseInt(startDate.substring(5, 7)) - 1);
@@ -130,8 +144,15 @@ public class EventActivity extends AppCompatActivity {
         event.set(java.util.Calendar.HOUR_OF_DAY, Integer.parseInt(startDate.substring(11, 13)));
         event.set(java.util.Calendar.MINUTE, Integer.parseInt(startDate.substring(14, 16)));
 
-        if(current.getTimeInMillis() > event.getTimeInMillis())
+        Log.i("currentTime", String.valueOf(current.getTimeInMillis()));
+        Log.i("eventTime", String.valueOf(event.getTimeInMillis()));
+
+        if(current.getTimeInMillis() > event.getTimeInMillis()){
             notificationSwitch.setVisibility(View.GONE);
+            counterCard.setVisibility(View.GONE);
+        }
+        else
+            counterView.start(event.getTimeInMillis() - current.getTimeInMillis());
     }
 
     private void getPermission() {
@@ -153,14 +174,14 @@ public class EventActivity extends AppCompatActivity {
             int endMinutes = Integer.parseInt(endDate.substring(14, 16));
 
             //Start Date
-            java.util.Calendar cal = java.util.Calendar.getInstance();
-            cal.set(java.util.Calendar.MONTH, Integer.parseInt(startDate.substring(5, 7)) - 1);
-            cal.set(java.util.Calendar.DAY_OF_MONTH, Integer.parseInt(startDate.substring(8, 10)));
-            cal.set(java.util.Calendar.YEAR, Integer.parseInt(startDate.substring(0, 4)));
-            cal.set(java.util.Calendar.HOUR_OF_DAY, startHour);
-            cal.set(java.util.Calendar.MINUTE, startMinutes);
-            cal.set(java.util.Calendar.SECOND, 0);
-            cal.set(java.util.Calendar.MILLISECOND, 0);
+            java.util.Calendar startCal = java.util.Calendar.getInstance();
+            startCal.set(java.util.Calendar.MONTH, Integer.parseInt(startDate.substring(5, 7)) - 1);
+            startCal.set(java.util.Calendar.DAY_OF_MONTH, Integer.parseInt(startDate.substring(8, 10)));
+            startCal.set(java.util.Calendar.YEAR, Integer.parseInt(startDate.substring(0, 4)));
+            startCal.set(java.util.Calendar.HOUR_OF_DAY, startHour);
+            startCal.set(java.util.Calendar.MINUTE, startMinutes);
+            startCal.set(java.util.Calendar.SECOND, 0);
+            startCal.set(java.util.Calendar.MILLISECOND, 0);
 
             //End Date
             java.util.Calendar endCal = java.util.Calendar.getInstance();
@@ -181,7 +202,7 @@ public class EventActivity extends AppCompatActivity {
             values.put(CalendarContract.Events.TITLE, event);
             values.put(CalendarContract.Events.DESCRIPTION, desc);
             values.put(CalendarContract.Events.ALL_DAY, false);
-            values.put(CalendarContract.Events.DTSTART, cal.getTimeInMillis());
+            values.put(CalendarContract.Events.DTSTART, startCal.getTimeInMillis());
             values.put(CalendarContract.Events.DTEND, endCal.getTimeInMillis());
             values.put(CalendarContract.Events.EVENT_TIMEZONE, timeZone.getID());
             values.put(CalendarContract.Events.EVENT_LOCATION, venue);
