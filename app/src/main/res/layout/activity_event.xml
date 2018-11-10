@@ -259,26 +259,36 @@
                 android:layout_marginEnd="20dp"
                 android:layout_marginTop="40dp">
 
-                <ImageView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_marginTop="40dp"
-                    android:layout_height="400dp"
-                    android:src="@drawable/placeholder"
-                    android:scaleType="centerCrop"
-                    android:layout_gravity="top"
-                    android:id="@+id/eventPic"/>
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:orientation="vertical">
 
-                <Button
-                    android:layout_width="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_height="60dp"
-                    android:id="@+id/regButton"
-                    android:fontFamily="@font/robotothin"
-                    android:text="REGISTER NOW!"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:background="@drawable/button"
-                    android:textColor="@android:color/white"/>
+                    <ImageView
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="380dp"
+                        android:layout_marginBottom="10dp"
+                        android:src="@drawable/placeholder"
+                        android:scaleType="fitXY"
+                        android:adjustViewBounds="true"
+                        android:id="@+id/eventPic"/>
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_height="60dp"
+                        android:id="@+id/regButton"
+                        android:fontFamily="@font/robotothin"
+                        android:text="REGISTER NOW!"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:background="@drawable/button"
+                        android:textColor="@android:color/white"/>
+
+                </LinearLayout>
 
             </android.support.v7.widget.CardView>
             
