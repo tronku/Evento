@@ -331,7 +331,7 @@
                         android:textColor="@android:color/black"
                         android:layout_marginStart="80dp"
                         android:layout_below="@id/contactPerson"
-                        android:layout_marginTop="4dp"/>
+                        android:layout_marginTop="2dp"/>
 
                     <TextView
                         android:layout_width="70dp"

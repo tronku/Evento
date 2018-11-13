@@ -1,11 +1,15 @@
 package com.example.tronku.eventmanager;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.Image;
+import android.net.http.SslError;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
@@ -32,7 +36,7 @@ public class RegisterEventActivity extends AppCompatActivity {
         String url = getIntent().getStringExtra("website");
         webLink.setText(url);
 
-        webview.setWebViewClient(new MyBrowser());
+        webview.setWebViewClient(new SSLTolerentWebViewClient());
         webview.getSettings().setLoadsImagesAutomatically(true);
         webview.getSettings().setDomStorageEnabled(true);
         webview.getSettings().setLoadWithOverviewMode(true);
@@ -43,7 +47,11 @@ public class RegisterEventActivity extends AppCompatActivity {
         webview.loadUrl(url);
     }
 
-    private class MyBrowser extends WebViewClient {
+    private class SSLTolerentWebViewClient extends WebViewClient {
+        public void onReceivedSslError(WebView view, final SslErrorHandler handler, SslError error) {
+            handler.proceed();
+        }
+
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             view.loadUrl(url);
