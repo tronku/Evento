@@ -74,7 +74,7 @@
                 android:id="@+id/counterCard"
                 android:layout_marginEnd="20dp"
                 android:layout_marginTop="20dp"
-                android:layout_height="60dp"
+                android:layout_height="70dp"
                 app:cardCornerRadius="12dp"
                 android:background="@android:color/white">
 
@@ -83,23 +83,21 @@
                     android:layout_gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:isHideTimeBackground="true"
                     app:isShowDay="true"
                     app:isShowHour="true"
                     app:isShowMinute="true"
                     app:isShowSecond="true"
-                    app:isShowMillisecond="true"
                     app:timeTextColor="@color/orangeDark"
-                    app:timeTextSize="38sp"
+                    app:timeTextSize="50sp"
                     app:isTimeTextBold="true"
                     app:suffixGravity="bottom"
-                    app:suffixTextColor="#000000"
-                    app:suffixTextSize="14sp"
+                    app:suffixTextColor="@android:color/darker_gray"
+                    app:suffixTextSize="16sp"
+                    app:isSuffixTextBold="true"
                     app:suffixHour="h"
                     app:suffixMinute="m"
-                    app:suffixSecond="s"
                     app:suffixDay="d"
-                    app:suffixMillisecond="ms" />
+                    app:suffixSecond="s"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -121,7 +119,7 @@
                 android:layout_marginEnd="20dp"
                 android:layout_gravity="center_horizontal"
                 app:cardCornerRadius="15dp"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="10dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -229,7 +227,7 @@
                 android:layout_width="match_parent"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="20dp"
                 app:cardCornerRadius="15dp"
                 android:layout_height="wrap_content">
 
@@ -257,7 +255,7 @@
                 app:cardCornerRadius="15dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:layout_marginTop="40dp">
+                android:layout_marginTop="20dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"

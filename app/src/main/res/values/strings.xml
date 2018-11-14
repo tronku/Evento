@@ -7,12 +7,7 @@
         <item>About</item>
     </array>
 
-    <string name="about">One stop for all events, workshops, College programming contest results.
-This app includes features to share all details regarding events and workshops that are going to be conducted in our college. It helps also gives a one stop destination for all societies and groups in college to promote their events easily.</string>
-
-    <string name="more">You can filter out events with respect to societies. To see the past events, there\'s a Past Event section. Registrations for the workshop/events can be done within in the app through webview. </string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="about">One stop for all events and workshops organized by various college societies.</string>
+    <string name="aboutMore">Share\t\t\tPromote\t\t\tConduct</string>
 
 </resources>
