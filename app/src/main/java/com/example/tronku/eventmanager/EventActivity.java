@@ -81,8 +81,10 @@ public class EventActivity extends AppCompatActivity {
     private Intent intent, call;
     private static final int REQUEST_CODE = 101, CALENDAR_CODE = 201;
     private String event, society, logo, desc, startDate, endDate, image, regLink, venue, contact_person, contact_no;
+    private long id;
     private long eventId;
     private boolean needReminder = false;
+    private java.util.Calendar startCal, endCal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +102,6 @@ public class EventActivity extends AppCompatActivity {
             @Override
             public void onEnd(CountdownView cv) {
                 counterView.setVisibility(View.GONE);
-                liveText.setVisibility(View.VISIBLE);
             }
         });
 
@@ -137,22 +138,48 @@ public class EventActivity extends AppCompatActivity {
 
     private void checkValidityAndStartCounter() {
         java.util.Calendar current = java.util.Calendar.getInstance();
-        java.util.Calendar event = java.util.Calendar.getInstance();
-        event.set(java.util.Calendar.MONTH, Integer.parseInt(startDate.substring(5, 7)) - 1);
-        event.set(java.util.Calendar.DAY_OF_MONTH, Integer.parseInt(startDate.substring(8, 10)));
-        event.set(java.util.Calendar.YEAR, Integer.parseInt(startDate.substring(0, 4)));
-        event.set(java.util.Calendar.HOUR_OF_DAY, Integer.parseInt(startDate.substring(11, 13)));
-        event.set(java.util.Calendar.MINUTE, Integer.parseInt(startDate.substring(14, 16)));
+
+        int startHour = Integer.parseInt(startDate.substring(11, 13));
+        int startMinutes = Integer.parseInt(startDate.substring(14, 16));
+        int endHour = Integer.parseInt(endDate.substring(11, 13));
+        int endMinutes = Integer.parseInt(endDate.substring(14, 16));
+
+        //Start Date
+        startCal = java.util.Calendar.getInstance();
+        startCal.set(java.util.Calendar.MONTH, Integer.parseInt(startDate.substring(5, 7)) - 1);
+        startCal.set(java.util.Calendar.DAY_OF_MONTH, Integer.parseInt(startDate.substring(8, 10)));
+        startCal.set(java.util.Calendar.YEAR, Integer.parseInt(startDate.substring(0, 4)));
+        startCal.set(java.util.Calendar.HOUR_OF_DAY, startHour);
+        startCal.set(java.util.Calendar.MINUTE, startMinutes);
+        startCal.set(java.util.Calendar.SECOND, 0);
+        startCal.set(java.util.Calendar.MILLISECOND, 0);
+
+        //End Date
+        endCal = java.util.Calendar.getInstance();
+        endCal.set(java.util.Calendar.MONTH, Integer.parseInt(endDate.substring(5, 7)) - 1);
+        endCal.set(java.util.Calendar.DAY_OF_MONTH, Integer.parseInt(endDate.substring(8, 10)));
+        endCal.set(java.util.Calendar.YEAR, Integer.parseInt(endDate.substring(0, 4)));
+        endCal.set(java.util.Calendar.HOUR_OF_DAY, endHour);
+        endCal.set(java.util.Calendar.MINUTE, endMinutes);
+        endCal.set(java.util.Calendar.SECOND, 0);
+        endCal.set(java.util.Calendar.MILLISECOND, 0);
 
         Log.i("currentTime", String.valueOf(current.getTimeInMillis()));
-        Log.i("eventTime", String.valueOf(event.getTimeInMillis()));
+        Log.i("eventTime", String.valueOf(startCal.getTimeInMillis()));
 
-        if(current.getTimeInMillis() > event.getTimeInMillis()){
+        if(current.getTimeInMillis() >= endCal.getTimeInMillis()){
             notificationSwitch.setVisibility(View.GONE);
             counterCard.setVisibility(View.GONE);
         }
+
+        else if(current.getTimeInMillis() <= endCal.getTimeInMillis() && current.getTimeInMillis() >= startCal.getTimeInMillis()) {
+            counterView.setVisibility(View.GONE);
+            liveText.setVisibility(View.VISIBLE);
+            notificationSwitch.setVisibility(View.GONE);
+        }
+
         else
-            counterView.start(event.getTimeInMillis() - current.getTimeInMillis());
+            counterView.start(startCal.getTimeInMillis() - current.getTimeInMillis());
     }
 
     private void getPermission() {
@@ -168,30 +195,6 @@ public class EventActivity extends AppCompatActivity {
     private void addReminderInCalendar() {
 
         if(needReminder) {
-            int startHour = Integer.parseInt(startDate.substring(11, 13));
-            int startMinutes = Integer.parseInt(startDate.substring(14, 16));
-            int endHour = Integer.parseInt(endDate.substring(11, 13));
-            int endMinutes = Integer.parseInt(endDate.substring(14, 16));
-
-            //Start Date
-            java.util.Calendar startCal = java.util.Calendar.getInstance();
-            startCal.set(java.util.Calendar.MONTH, Integer.parseInt(startDate.substring(5, 7)) - 1);
-            startCal.set(java.util.Calendar.DAY_OF_MONTH, Integer.parseInt(startDate.substring(8, 10)));
-            startCal.set(java.util.Calendar.YEAR, Integer.parseInt(startDate.substring(0, 4)));
-            startCal.set(java.util.Calendar.HOUR_OF_DAY, startHour);
-            startCal.set(java.util.Calendar.MINUTE, startMinutes);
-            startCal.set(java.util.Calendar.SECOND, 0);
-            startCal.set(java.util.Calendar.MILLISECOND, 0);
-
-            //End Date
-            java.util.Calendar endCal = java.util.Calendar.getInstance();
-            endCal.set(java.util.Calendar.MONTH, Integer.parseInt(endDate.substring(5, 7)) - 1);
-            endCal.set(java.util.Calendar.DAY_OF_MONTH, Integer.parseInt(endDate.substring(8, 10)));
-            endCal.set(java.util.Calendar.YEAR, Integer.parseInt(endDate.substring(0, 4)));
-            endCal.set(java.util.Calendar.HOUR_OF_DAY, endHour);
-            endCal.set(java.util.Calendar.MINUTE, endMinutes);
-            endCal.set(java.util.Calendar.SECOND, 0);
-            endCal.set(java.util.Calendar.MILLISECOND, 0);
 
             ContentResolver cr = getContentResolver();
             TimeZone timeZone = TimeZone.getTimeZone("Asia/Kolkata");
@@ -201,14 +204,12 @@ public class EventActivity extends AppCompatActivity {
             values.put(CalendarContract.Events.CALENDAR_ID, 1);
             values.put(CalendarContract.Events.TITLE, event);
             values.put(CalendarContract.Events.DESCRIPTION, desc);
-            values.put(CalendarContract.Events.ALL_DAY, false);
+            values.put(CalendarContract.Events.ALL_DAY, 0);
             values.put(CalendarContract.Events.DTSTART, startCal.getTimeInMillis());
             values.put(CalendarContract.Events.DTEND, endCal.getTimeInMillis());
             values.put(CalendarContract.Events.EVENT_TIMEZONE, timeZone.getID());
             values.put(CalendarContract.Events.EVENT_LOCATION, venue);
             values.put(CalendarContract.Events.HAS_ALARM, false);
-            values.put(CalendarContract.Events.STATUS, 1);
-
 
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR}, CALENDAR_CODE);
@@ -216,6 +217,8 @@ public class EventActivity extends AppCompatActivity {
 
             Uri eventUri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
             eventId = Long.parseLong(eventUri.getLastPathSegment());
+            Log.i("eventid", String.valueOf(eventId));
+            Log.i("myId", String.valueOf(101314+id));
             Toast.makeText(this, "Event added!", Toast.LENGTH_SHORT).show();
 
             /** Adding reminder for event added. */
@@ -276,6 +279,7 @@ public class EventActivity extends AppCompatActivity {
         venue = intent.getStringExtra("eventVenue");
         contact_person = intent.getStringExtra("contact_person");
         contact_no = intent.getStringExtra("contact_number");
+        id = intent.getLongExtra("id", 0);
     }
 
 

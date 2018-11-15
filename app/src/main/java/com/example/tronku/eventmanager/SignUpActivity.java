@@ -3,6 +3,8 @@ package com.example.tronku.eventmanager;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -41,9 +43,7 @@ public class SignUpActivity extends AppCompatActivity {
     @BindView(R.id.loader)ProgressBar loader;
     @BindView(R.id.layer)View layer;
 
-    private String email, password, name, mobile;
-    private RequestQueue queue;
-    private View view;
+    private String email, password, name, mobile, fcm_token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +51,6 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
         ButterKnife.bind(this);
-        view = findViewById(android.R.id.content);
 
         signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,6 +117,9 @@ public class SignUpActivity extends AppCompatActivity {
                 }
             }
         });
+
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        fcm_token = pref.getString("fcm_token", "0");
     }
 
     public void signUpData(final String name, final String email, final String mobile, final String password){
@@ -128,6 +130,7 @@ public class SignUpActivity extends AppCompatActivity {
             object.put("email", email);
             object.put("phone", mobile);
             object.put("password", password);
+            object.put("fcm_token", fcm_token);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -206,7 +209,7 @@ public class SignUpActivity extends AppCompatActivity {
         });
 
         objectRequest.setTag("auth");
-        queue = Volley.newRequestQueue(SignUpActivity.this);
+        RequestQueue queue = Volley.newRequestQueue(SignUpActivity.this);
         queue.add(objectRequest);
 
     }

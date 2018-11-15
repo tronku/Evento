@@ -66,6 +66,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                 event.putExtra("image", eventArrayList.get(i).getImgUrl());
                 event.putExtra("societyLogo", eventArrayList.get(i).getSocietyLogo());
                 event.putExtra("regLink", eventArrayList.get(i).getRegLink());
+                event.putExtra("id", eventArrayList.get(i).getId());
                 context.startActivity(event);
             }
         });

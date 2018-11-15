@@ -47,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.layer)View layer;
     @BindView(R.id.loader)ProgressBar loader;
 
-    private String email_mobno, password;
+    private String email_mobno, password, fcm_token;
     private View view;
     private SharedPreferences pref;
     private static final int REQUEST_CODE = 101;
@@ -104,6 +104,9 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        fcm_token = pref.getString("fcm_token", "0");
+
         askPermission();
     }
 
@@ -119,6 +122,7 @@ public class LoginActivity extends AppCompatActivity {
         try{
             credentials.put("email", email_mobno);
             credentials.put("password", password);
+            credentials.put("fcm_token", fcm_token);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -252,7 +256,7 @@ public class LoginActivity extends AppCompatActivity {
         switch (requestCode) {
             case REQUEST_CODE:
                 if(grantResults.length>0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
+                    Toast.makeText(LoginActivity.this, "Permission granted!", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     Toast.makeText(LoginActivity.this, "Permission denied!", Toast.LENGTH_SHORT).show();
