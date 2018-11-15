@@ -48,7 +48,7 @@ public class DashboardFragment extends Fragment {
     private RecyclerView eventsRecyclerView;
     private ArrayList<Event> eventList = new ArrayList<>();
     private View view;
-    private CardView filter;
+    private CardView filter, remove;
     private EventsAdapter adapter;
     private boolean hasExtra = false;
     private TextView noEvent, infoText;
@@ -68,6 +68,7 @@ public class DashboardFragment extends Fragment {
         infoText = view.findViewById(R.id.infoText);
         noEvent = view.findViewById(R.id.noevents);
         filter = view.findViewById(R.id.filter);
+        remove = view.findViewById(R.id.remove);
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         eventsRecyclerView.setAdapter(adapter);
 
@@ -86,33 +87,19 @@ public class DashboardFragment extends Fragment {
         filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Dialog dialog = new Dialog(getContext());
-                dialog.setContentView(R.layout.filter_dialog);
-                Button society = dialog.findViewById(R.id.societiesFilter);
-                CardView remove = dialog.findViewById(R.id.removeFilter);
+                Intent society = new Intent(getContext(), SocietyFilterActivity.class);
+                society.putExtra("upcoming", "true");
+                startActivity(society);
+            }
+        });
 
-                society.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialog.dismiss();
-                        Intent society = new Intent(dialog.getContext(), SocietyFilterActivity.class);
-                        society.putExtra("upcoming", "true");
-                        startActivity(society);
-                    }
-                });
-
-                remove.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        dialog.dismiss();
-                        Intent remove = new Intent(dialog.getContext(), MainActivity.class);
-                        remove.putExtra("remove","true");
-                        remove.putExtra("upcoming", "true");
-                        startActivity(remove);
-                    }
-                });
-
-                dialog.show();
+        remove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent remove = new Intent(getContext(), MainActivity.class);
+                remove.putExtra("remove","true");
+                remove.putExtra("upcoming", "true");
+                startActivity(remove);
             }
         });
 

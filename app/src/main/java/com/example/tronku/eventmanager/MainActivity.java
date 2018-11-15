@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.tronku.eventmanager.Fragments.AboutFragment;
@@ -70,22 +71,25 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
             setTitle(titles.get(1));
         }
 
-        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-            @Override
-            public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                if(!task.isSuccessful()){
-
-                }
-                else{
-                    fcm_token = task.getResult().getToken();
-                }
-            }
-        });
-
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = pref.edit();
-        editor.putString("fcm_token", fcm_token);
-        editor.apply();
+        if(!pref.contains("fcm_token")) {
+
+            FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                @Override
+                public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                    if(!task.isSuccessful()){
+                        Log.w("FCM TOKEN", "not generated");
+                    }
+                    else{
+                        fcm_token = task.getResult().getToken();
+                    }
+                }
+            });
+
+            editor.putString("fcm_token", fcm_token);
+            editor.apply();
+        }
         viewHolder.name.setText(pref.getString("name", "Me"));
         viewHolder.email.setText(pref.getString("email", "My email"));
     }
@@ -120,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
             args.putString("society", intent.getStringExtra("society"));
             args.putString("logo", intent.getStringExtra("logo"));
             fragment.setArguments(args);
+            hasExtra = false;
         }
         transaction.replace(R.id.container, fragment).commit();
     }
