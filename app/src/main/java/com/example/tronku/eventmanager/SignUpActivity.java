@@ -123,7 +123,7 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
 
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         if(!pref.contains("fcm_token")){
             FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                 @Override
@@ -133,6 +133,9 @@ public class SignUpActivity extends AppCompatActivity {
                     }
                     else{
                         fcm_token = task.getResult().getToken();
+                        SharedPreferences.Editor editor = pref.edit();
+                        editor.putString("fcm_token", fcm_token);
+                        editor.apply();
                     }
                 }
             });

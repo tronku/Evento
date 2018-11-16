@@ -96,10 +96,19 @@ public class DashboardFragment extends Fragment {
         remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent remove = new Intent(getContext(), MainActivity.class);
+                /*Intent remove = new Intent(getContext(), MainActivity.class);
                 remove.putExtra("remove","true");
                 remove.putExtra("upcoming", "true");
-                startActivity(remove);
+                startActivity(remove);*/
+
+                if(hasExtra){
+                    hasExtra = false;
+                    updateEvents(false);
+                    Toast.makeText(getContext(), "Filters removed!", Toast.LENGTH_SHORT).show();
+                    infoText.setText("Upcoming events - ");
+                }
+                else
+                    Toast.makeText(getContext(), "No filters to remove!", Toast.LENGTH_SHORT).show();
             }
         });
 

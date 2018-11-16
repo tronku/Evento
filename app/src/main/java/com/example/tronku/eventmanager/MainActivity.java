@@ -71,8 +71,8 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
             setTitle(titles.get(1));
         }
 
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        SharedPreferences.Editor editor = pref.edit();
+        final SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
         if(!pref.contains("fcm_token")) {
 
             FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -83,13 +83,14 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
                     }
                     else{
                         fcm_token = task.getResult().getToken();
+                        SharedPreferences.Editor editor = pref.edit();
+                        editor.putString("fcm_token", fcm_token);
+                        editor.apply();
                     }
                 }
             });
-
-            editor.putString("fcm_token", fcm_token);
-            editor.apply();
         }
+
         viewHolder.name.setText(pref.getString("name", "Me"));
         viewHolder.email.setText(pref.getString("email", "My email"));
     }

@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -61,7 +62,7 @@ public class PastEventsFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_past_events, container, false);
@@ -99,10 +100,14 @@ public class PastEventsFragment extends Fragment {
         remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent remove = new Intent(getContext(), MainActivity.class);
-                remove.putExtra("remove","true");
-                remove.putExtra("past", "true");
-                startActivity(remove);
+                if(hasExtra) {
+                    hasExtra = false;
+                    Toast.makeText(getContext(), "Filters removed!", Toast.LENGTH_SHORT).show();
+                    updateEvents(false);
+                    infoText.setText("Past events - ");
+                }
+                else
+                    Toast.makeText(getContext(), "No filters to remove!", Toast.LENGTH_SHORT).show();
             }
         });
 

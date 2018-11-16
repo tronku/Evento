@@ -64,6 +64,7 @@
                             android:hint="Email-id/Mobile No"
                             android:inputType="textEmailAddress"
                             android:id="@+id/emailid_mobno"
+                            android:nextFocusDown="@id/password"
                             android:layout_marginStart="10dp"
                             android:fontFamily="@font/robotoregular"/>
 
