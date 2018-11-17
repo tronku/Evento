@@ -2,6 +2,7 @@ package com.example.tronku.eventmanager;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -166,6 +167,12 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
             case 2:
                 goToFragment(new AboutFragment());
                 break;
+            case 3:
+                Intent mail = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                        "mailto","dscjssnoida@gmail.com", null));
+                mail.putExtra(Intent.EXTRA_EMAIL, "dscjssnoida@gmail.com");
+                mail.putExtra(Intent.EXTRA_SUBJECT, "Feedback/Issue");
+                startActivity(Intent.createChooser(mail, "Send feedback/issue: "));
         }
 
         viewHolder.mDuoDrawerLayout.closeDrawer();

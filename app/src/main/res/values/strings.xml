@@ -5,6 +5,7 @@
         <item>Upcoming Events</item>
         <item>Past Events</item>
         <item>About</item>
+        <item>Feedback/issue</item>
     </array>
 
     <string name="about">One stop for all events and workshops organized by various college societies.</string>

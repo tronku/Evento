@@ -166,7 +166,9 @@ public class LoginActivity extends AppCompatActivity {
                         if(response.has("token")){
                             try {
                                 String token = response.getString("token");
-                                String verified = response.getString("verified");
+                                String verified = "true";
+                                if(response.has("verified"))
+                                    verified = response.getString("verified");
                                 SharedPreferences.Editor editor = pref.edit();
                                 editor.putString("token", token);
                                 editor.putString("email", response.getString("email"));
