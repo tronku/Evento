@@ -95,10 +95,9 @@ public class UpcomingEventsFragment extends Fragment {
         remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent removeFilter = new Intent(getContext(), MainActivity.class);
-                removeFilter.putExtra("upcoming", "true");
-                removeFilter.putExtra("remove", "true");
-                startActivity(removeFilter);
+                hasExtra = false;
+                remove.setVisibility(View.GONE);
+                updateEvents(false);
             }
         });
 
