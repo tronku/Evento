@@ -41,15 +41,35 @@
         android:textSize="38sp"
         android:layout_gravity="center"/>
 
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="20dp"
-        android:backgroundTint="@color/orangeLayer"
-        android:layout_marginEnd="20dp"
-        android:id="@+id/filter"
-        app:borderWidth="0dp"
-        android:src="@drawable/ic_filter"/>
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:backgroundTint="@color/redLayer"
+            android:id="@+id/remove"
+            app:borderWidth="0dp"
+            android:visibility="gone"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/delete_icon"
+            android:tint="@android:color/white"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:layout_margin="2dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:backgroundTint="@color/orangeLayer"
+            android:id="@+id/filter"
+            app:borderWidth="0dp"
+            android:src="@drawable/ic_filter"/>
+
+    </LinearLayout>
 
 </FrameLayout>

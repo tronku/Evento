@@ -25,6 +25,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.tronku.eventmanager.MainActivity;
 import com.example.tronku.eventmanager.POJO.Event;
 import com.example.tronku.eventmanager.Adapters.EventsAdapter;
 import com.example.tronku.eventmanager.POJO.API;
@@ -47,7 +48,7 @@ public class UpcomingEventsFragment extends Fragment {
     private ArrayList<Event> eventList = new ArrayList<>();
     private View view;
     private EventsAdapter adapter;
-    private FloatingActionButton filter;
+    private FloatingActionButton filter, remove;
     private boolean hasExtra = false;
     private TextView noEvent;
 
@@ -65,10 +66,15 @@ public class UpcomingEventsFragment extends Fragment {
         eventsRecyclerView = view.findViewById(R.id.eventsListView);
         noEvent = view.findViewById(R.id.noevents);
         filter = view.findViewById(R.id.filter);
+        remove = view.findViewById(R.id.remove);
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         eventsRecyclerView.setAdapter(adapter);
 
         updateEvents(hasExtra);
+        if(hasExtra)
+            remove.setVisibility(View.VISIBLE);
+        else
+            remove.setVisibility(View.GONE);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -83,6 +89,16 @@ public class UpcomingEventsFragment extends Fragment {
                 Intent society = new Intent(getContext(), SocietyFilterActivity.class);
                 society.putExtra("upcoming", "true");
                 startActivity(society);
+            }
+        });
+
+        remove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent removeFilter = new Intent(getContext(), MainActivity.class);
+                removeFilter.putExtra("upcoming", "true");
+                removeFilter.putExtra("remove", "true");
+                startActivity(removeFilter);
             }
         });
 

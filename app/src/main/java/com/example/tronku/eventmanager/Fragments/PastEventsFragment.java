@@ -52,7 +52,7 @@ public class PastEventsFragment extends Fragment {
     private RecyclerView eventsRecyclerView;
     private ArrayList<Event> eventList = new ArrayList<>();
     private View view;
-    private FloatingActionButton filter;
+    private FloatingActionButton filter,remove;
     private EventsAdapter adapter;
     private boolean hasExtra = false;
     private TextView noEvent;
@@ -72,10 +72,16 @@ public class PastEventsFragment extends Fragment {
         eventsRecyclerView = view.findViewById(R.id.eventsListView);
         noEvent = view.findViewById(R.id.noevents);
         filter = view.findViewById(R.id.filter);
+        remove = view.findViewById(R.id.remove);
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         eventsRecyclerView.setAdapter(adapter);
 
         updateEvents(hasExtra);
+
+        if(hasExtra)
+            remove.setVisibility(View.VISIBLE);
+        else
+            remove.setVisibility(View.GONE);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -90,6 +96,16 @@ public class PastEventsFragment extends Fragment {
                 Intent society = new Intent(getContext(), SocietyFilterActivity.class);
                 society.putExtra("past", "true");
                 startActivity(society);
+            }
+        });
+
+        remove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent removeFilter = new Intent(getContext(), MainActivity.class);
+                removeFilter.putExtra("past", "true");
+                removeFilter.putExtra("remove", "true");
+                startActivity(removeFilter);
             }
         });
 

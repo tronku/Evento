@@ -166,6 +166,7 @@ public class EventActivity extends AppCompatActivity {
             counterView.setVisibility(View.GONE);
             liveText.setVisibility(View.VISIBLE);
             notificationSwitch.setVisibility(View.GONE);
+            regButton.setVisibility(View.GONE);
         }
 
         else
