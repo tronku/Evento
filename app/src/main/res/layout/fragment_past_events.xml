@@ -75,8 +75,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/noevents"
+        android:fontFamily="@font/robotoregular"
         android:text="NO EVENTS"
-        android:textSize="46sp"
+        android:textSize="38sp"
         android:layout_gravity="center"/>
 
 </FrameLayout>

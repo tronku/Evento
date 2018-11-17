@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -179,7 +180,7 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 Log.d("error",volleyError.toString());
-                if(volleyError.networkResponse.statusCode==400){
+                if(volleyError.networkResponse!=null && volleyError.networkResponse.statusCode==400){
                     String json = new String(volleyError.networkResponse.data);
                     try {
                         JSONObject response = new JSONObject(json);

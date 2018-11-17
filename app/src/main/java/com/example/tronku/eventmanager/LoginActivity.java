@@ -184,7 +184,7 @@ public class LoginActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                if(error.networkResponse.statusCode==404){
+                if(error.networkResponse!=null && error.networkResponse.statusCode==404){
                     String json = new String(error.networkResponse.data);
                     try {
                         JSONObject jsonError = new JSONObject(json);

@@ -33,7 +33,8 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".SplashScreen">
+        <activity android:name=".SplashScreen"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,13 +43,20 @@
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:theme="@style/AppThemeNoBar" />
-        <activity android:name=".SignUpActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".OTPActivity" />
-        <activity android:name=".SocietyFilterActivity" />
-        <activity android:name=".EventActivity" />
-        <activity android:name=".RegisterEventActivity" />
+            android:theme="@style/AppThemeNoBar"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".SignUpActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".OTPActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".SocietyFilterActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".EventActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".RegisterEventActivity"
+            android:screenOrientation="portrait"/>
 
         <receiver android:name=".AlarmReceiver" android:process=":remote" />
     </application>

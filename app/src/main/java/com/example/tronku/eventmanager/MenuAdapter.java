@@ -10,12 +10,8 @@ import nl.psdcompany.duonavigationdrawer.views.DuoOptionView;
 
 import static com.example.tronku.eventmanager.R.drawable.selector_drawable;
 
-/**
- * Created by PSD on 13-04-17.
- */
-
 class MenuAdapter extends BaseAdapter {
-    private ArrayList<String> mOptions = new ArrayList<>();
+    private ArrayList<String> mOptions;
     private ArrayList<DuoOptionView> mOptionViews = new ArrayList<>();
 
     MenuAdapter(ArrayList<String> options) {

@@ -93,7 +93,6 @@
                     app:suffixGravity="bottom"
                     app:suffixTextColor="@android:color/darker_gray"
                     app:suffixTextSize="16sp"
-                    app:isSuffixTextBold="true"
                     app:suffixHour="h"
                     app:suffixMinute="m"
                     app:suffixDay="d"

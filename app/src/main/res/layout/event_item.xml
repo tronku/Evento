@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:stateListAnimator="@animator/card_press"
     android:clickable="true"
-    android:layout_height="200dp"
+    android:focusable="true"
+    android:layout_height="196dp"
     android:layout_marginTop="10dp"
     android:layout_marginBottom="10dp"
     android:layout_marginStart="6dp"
@@ -41,14 +42,15 @@
                 android:layout_width="240dp"
                 android:layout_height="wrap_content"
                 android:text="SOCIETY"
+                android:fontFamily="@font/robotoregular"
                 android:textAllCaps="true"
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:id="@+id/societyEvent"
                 android:textColor="@android:color/white"
                 android:layout_marginStart="6dp"
-                android:layout_marginTop="4dp"
-                android:textSize="16sp"/>
+                android:layout_marginTop="2dp"
+                android:textSize="14sp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -86,32 +88,32 @@
             android:textSize="22sp"
             android:id="@+id/nameEvent"
             android:layout_marginStart="14dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:textColor="@android:color/black"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="4dp"
             android:layout_marginStart="10dp"
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="26dp"
-                android:layout_height="26dp"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:src="@drawable/clock"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="8dp"
                 android:gravity="center_vertical"
                 android:textSize="15sp"
+                android:fontFamily="@font/robotoregular"
                 android:textColor="@android:color/black"
-                android:text="4:30 - 6:30 pm"
-                android:id="@+id/timeEvent"
-                android:drawablePadding="10dp"/>
+                android:text="4:30 PM - 6:30 PM"
+                android:id="@+id/timeEvent"/>
 
         </LinearLayout>
 

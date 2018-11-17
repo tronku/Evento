@@ -1,25 +1,20 @@
 package com.example.tronku.eventmanager;
 
 import android.Manifest;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.icu.util.Calendar;
-import android.icu.util.LocaleData;
 import android.net.Uri;
 import android.preference.PreferenceManager;
-import android.provider.AlarmClock;
 import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.MenuItemHoverListener;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -28,20 +23,9 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 import com.squareup.picasso.Picasso;
 
-import java.text.DateFormat;
 import java.text.DateFormatSymbols;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.TimeZone;
 
 import butterknife.BindView;
@@ -85,6 +69,7 @@ public class EventActivity extends AppCompatActivity {
     private long eventId;
     private boolean needReminder = false;
     private java.util.Calendar startCal, endCal;
+    private SharedPreferences pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,10 +78,15 @@ public class EventActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         intent = getIntent();
         call = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + contact_no));
+        pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         fillData();
         fillViews();
         checkValidityAndStartCounter();
+
+        if(hasAdded()) {
+            notificationSwitch.setChecked(true);
+        }
 
         counterView.setOnCountdownEndListener(new CountdownView.OnCountdownEndListener() {
             @Override
@@ -109,7 +99,6 @@ public class EventActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 needReminder = b;
-                Log.i("needReminder", String.valueOf(needReminder));
                 getPermission();
             }
         });
@@ -192,9 +181,18 @@ public class EventActivity extends AppCompatActivity {
     }
 
 
+    public boolean hasAdded() {
+        if(pref.contains(""+eventId)){
+                Log.i("hasAdded","true");
+            return true;
+        }
+        Log.i("hasAdded", "false");
+        return false;
+    }
+
     private void addReminderInCalendar() {
 
-        if(needReminder) {
+        if(needReminder && !hasAdded()) {
 
             ContentResolver cr = getContentResolver();
             TimeZone timeZone = TimeZone.getTimeZone("Asia/Kolkata");
@@ -217,8 +215,6 @@ public class EventActivity extends AppCompatActivity {
 
             Uri eventUri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
             eventId = Long.parseLong(eventUri.getLastPathSegment());
-            Log.i("eventid", String.valueOf(eventId));
-            Log.i("myId", String.valueOf(101314+id));
             Toast.makeText(this, "Event added!", Toast.LENGTH_SHORT).show();
 
             /** Adding reminder for event added. */
@@ -227,11 +223,15 @@ public class EventActivity extends AppCompatActivity {
             values.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
             values.put(CalendarContract.Reminders.MINUTES, 10);
             cr.insert(CalendarContract.Reminders.CONTENT_URI, values);
+
+            pref.edit().putString(""+eventId, "Added").apply();
+            Log.i("afterClickHasAdded", hasAdded()+"");
         }
 
-        else{
+        else if(!needReminder && hasAdded()){
             Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventId);
             getContentResolver().delete(uri, null, null);
+            pref.edit().remove(""+eventId).apply();
             Toast.makeText(this, "Event removed!", Toast.LENGTH_SHORT).show();
         }
 
