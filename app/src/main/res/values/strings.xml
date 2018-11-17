@@ -2,7 +2,7 @@
     <string name="app_name">Evento</string>
 
     <array name="menu">
-        <item>Dashboard</item>
+        <item>Upcoming Events</item>
         <item>Past Events</item>
         <item>About</item>
     </array>

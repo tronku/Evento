@@ -77,12 +77,13 @@ public class EventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event);
         ButterKnife.bind(this);
         intent = getIntent();
-        call = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + contact_no));
         pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         fillData();
         fillViews();
         checkValidityAndStartCounter();
+
+        call = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + contact_no));
 
         if(hasAdded()) {
             notificationSwitch.setChecked(true);

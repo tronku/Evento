@@ -1,11 +1,11 @@
 package com.example.tronku.eventmanager.Fragments;
 
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,7 +27,6 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.tronku.eventmanager.POJO.Event;
 import com.example.tronku.eventmanager.Adapters.EventsAdapter;
-import com.example.tronku.eventmanager.MainActivity;
 import com.example.tronku.eventmanager.POJO.API;
 import com.example.tronku.eventmanager.R;
 import com.example.tronku.eventmanager.SocietyFilterActivity;
@@ -42,38 +40,33 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class DashboardFragment extends Fragment {
+public class UpcomingEventsFragment extends Fragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView eventsRecyclerView;
     private ArrayList<Event> eventList = new ArrayList<>();
     private View view;
-    private CardView filter, remove;
     private EventsAdapter adapter;
+    private FloatingActionButton filter;
     private boolean hasExtra = false;
-    private TextView noEvent, infoText;
+    private TextView noEvent;
 
-    public DashboardFragment() {
+    public UpcomingEventsFragment() {
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        view = inflater.inflate(R.layout.fragment_upcoming_events, container, false);
 
         adapter = new EventsAdapter(getContext(), eventList);
         swipeRefreshLayout = view.findViewById(R.id.swiperefresh);
         eventsRecyclerView = view.findViewById(R.id.eventsListView);
-        infoText = view.findViewById(R.id.infoText);
         noEvent = view.findViewById(R.id.noevents);
         filter = view.findViewById(R.id.filter);
-        remove = view.findViewById(R.id.remove);
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         eventsRecyclerView.setAdapter(adapter);
-
-        if(hasExtra)
-            infoText.setText(getArguments().getString("name") + " events list - ");
 
         updateEvents(hasExtra);
 
@@ -90,25 +83,6 @@ public class DashboardFragment extends Fragment {
                 Intent society = new Intent(getContext(), SocietyFilterActivity.class);
                 society.putExtra("upcoming", "true");
                 startActivity(society);
-            }
-        });
-
-        remove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                /*Intent remove = new Intent(getContext(), MainActivity.class);
-                remove.putExtra("remove","true");
-                remove.putExtra("upcoming", "true");
-                startActivity(remove);*/
-
-                if(hasExtra){
-                    hasExtra = false;
-                    updateEvents(false);
-                    Toast.makeText(getContext(), "Filters removed!", Toast.LENGTH_SHORT).show();
-                    infoText.setText("Upcoming events - ");
-                }
-                else
-                    Toast.makeText(getContext(), "No filters to remove!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -195,6 +169,5 @@ public class DashboardFragment extends Fragment {
             }
         });
     }
-
 
 }

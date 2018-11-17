@@ -2,6 +2,7 @@ package com.example.tronku.eventmanager;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -51,6 +52,7 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.signup)Button signupButton;
     @BindView(R.id.layer)View layer;
     @BindView(R.id.loader)ProgressBar loader;
+    @BindView(R.id.forgotPassword) TextView forgotPassword;
 
     private String email_mobno, password, fcm_token;
     private View view;
@@ -130,6 +132,13 @@ public class LoginActivity extends AppCompatActivity {
         else
             fcm_token = pref.getString("fcm_token", "0");
 
+        forgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this, EmailSendActivity.class));
+            }
+        });
+
         askPermission();
     }
 
@@ -139,7 +148,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void loginUser(String email_mobno, String password) {
+    private void loginUser(final String email_mobno, String password) {
         RequestQueue login;
         JSONObject credentials = new JSONObject();
         try{
@@ -157,6 +166,7 @@ public class LoginActivity extends AppCompatActivity {
                         if(response.has("token")){
                             try {
                                 String token = response.getString("token");
+                                String verified = response.getString("verified");
                                 SharedPreferences.Editor editor = pref.edit();
                                 editor.putString("token", token);
                                 editor.putString("email", response.getString("email"));
@@ -171,10 +181,18 @@ public class LoginActivity extends AppCompatActivity {
                                 layer.setVisibility(View.INVISIBLE);
                                 loader.setVisibility(View.INVISIBLE);
 
-                                Intent main = new Intent(LoginActivity.this, MainActivity.class);
-                                main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                main.putExtra("token",token);
-                                startActivity(main);
+                                if(verified.equals("false")) {
+                                    Toast.makeText(LoginActivity.this, "You must verify yourself!", Toast.LENGTH_SHORT).show();
+                                    Intent otp = new Intent(LoginActivity.this, OTPActivity.class);
+                                    otp.putExtra("email", email_mobno);
+                                    startActivity(otp);
+                                }
+                                else {
+                                    Intent main = new Intent(LoginActivity.this, MainActivity.class);
+                                    main.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    main.putExtra("token",token);
+                                    startActivity(main);
+                                }
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -259,8 +277,11 @@ public class LoginActivity extends AppCompatActivity {
                 snackbar.dismiss();
                 loginButton.setEnabled(true);
                 signupButton.setEnabled(true);
+
                 if(pref.contains("token")){
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
                 }
             }
         } catch (InterruptedException | IOException e) {

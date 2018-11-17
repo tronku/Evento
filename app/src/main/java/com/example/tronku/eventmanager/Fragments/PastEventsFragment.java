@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
@@ -51,10 +52,10 @@ public class PastEventsFragment extends Fragment {
     private RecyclerView eventsRecyclerView;
     private ArrayList<Event> eventList = new ArrayList<>();
     private View view;
-    private CardView filter, remove;
+    private FloatingActionButton filter;
     private EventsAdapter adapter;
     private boolean hasExtra = false;
-    private TextView noEvent, infoText;
+    private TextView noEvent;
 
     public PastEventsFragment() {
 
@@ -69,15 +70,10 @@ public class PastEventsFragment extends Fragment {
         adapter = new EventsAdapter(getContext(), eventList);
         swipeRefreshLayout = view.findViewById(R.id.swiperefresh);
         eventsRecyclerView = view.findViewById(R.id.eventsListView);
-        infoText = view.findViewById(R.id.infoText);
         noEvent = view.findViewById(R.id.noevents);
         filter = view.findViewById(R.id.filter);
-        remove = view.findViewById(R.id.remove);
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         eventsRecyclerView.setAdapter(adapter);
-
-        if(hasExtra)
-            infoText.setText(getArguments().getString("name") + " events list - ");
 
         updateEvents(hasExtra);
 
@@ -94,20 +90,6 @@ public class PastEventsFragment extends Fragment {
                 Intent society = new Intent(getContext(), SocietyFilterActivity.class);
                 society.putExtra("past", "true");
                 startActivity(society);
-            }
-        });
-
-        remove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(hasExtra) {
-                    hasExtra = false;
-                    Toast.makeText(getContext(), "Filters removed!", Toast.LENGTH_SHORT).show();
-                    updateEvents(false);
-                    infoText.setText("Past events - ");
-                }
-                else
-                    Toast.makeText(getContext(), "No filters to remove!", Toast.LENGTH_SHORT).show();
             }
         });
 

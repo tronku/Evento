@@ -80,7 +80,7 @@ public class SocietyFilterActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d("error", error.getCause().toString());
+
             }
         })
         {

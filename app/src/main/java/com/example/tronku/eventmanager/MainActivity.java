@@ -11,9 +11,10 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.tronku.eventmanager.Fragments.AboutFragment;
-import com.example.tronku.eventmanager.Fragments.DashboardFragment;
+import com.example.tronku.eventmanager.Fragments.UpcomingEventsFragment;
 import com.example.tronku.eventmanager.Fragments.PastEventsFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -37,7 +38,8 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
     private ArrayList<String> titles = new ArrayList<>();
     private boolean hasExtra = false;
     private boolean upcoming = true;
-    private String fcm_token;
+    private String fcm_token, currentFrag;
+    private int pressedCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
             upcoming = false;
 
         if(upcoming) {
-            goToFragment(new DashboardFragment());
+            goToFragment(new UpcomingEventsFragment());
             menuAdapter.setViewSelected(0, true);
             setTitle(titles.get(0));
         }
@@ -119,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
 
     private void goToFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        currentFrag = fragment.getClass().getName();
         if(hasExtra) {
             Bundle args = new Bundle();
             args.putString("name", intent.getStringExtra("name"));
@@ -127,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
             fragment.setArguments(args);
             hasExtra = false;
         }
+
         transaction.replace(R.id.container, fragment).commit();
     }
 
@@ -154,12 +158,12 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
 
         switch (position) {
             case 0:
-                goToFragment(new DashboardFragment());
+                goToFragment(new UpcomingEventsFragment());
                 break;
             case 1:
                 goToFragment(new PastEventsFragment());
                 break;
-            default:
+            case 2:
                 goToFragment(new AboutFragment());
                 break;
         }
@@ -185,7 +189,18 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        finishAffinity();
+        if(currentFrag.equals("com.example.tronku.eventmanager.Fragments.UpcomingEventsFragment")) {
+            pressedCount++;
+            if(pressedCount==1) {
+                Toast.makeText(this, "Press again to exit", Toast.LENGTH_SHORT).show();
+            }
+            else if(pressedCount==2){
+                finishAffinity();
+            }
+        }
+        else {
+            goToFragment(new UpcomingEventsFragment());
+            setTitle(titles.get(0));
+        }
     }
 }
