@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/strip_blue"
+    android:background="@drawable/bgui"
     tools:context=".EventActivity">
     
     <ScrollView
@@ -63,6 +63,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                app:cardCornerRadius="15dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:layout_marginTop="30dp">
 
                 <LinearLayout
@@ -170,6 +173,9 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_marginTop="30dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="20dp"
+                app:cardCornerRadius="15dp"
                 android:layout_height="wrap_content">
 
                 <ScrollView
@@ -192,8 +198,67 @@
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="460dp"
-                android:layout_marginTop="20dp">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="30dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="4dp">
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="60dp"
+                        android:src="@drawable/smartphone"
+                        android:layout_centerVertical="true"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Contact Person"
+                        android:fontFamily="@font/robotothin"
+                        android:textSize="20sp"
+                        android:textColor="@android:color/black"
+                        android:layout_marginStart="80dp"
+                        android:layout_marginTop="2dp"
+                        android:id="@+id/contactPerson"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Contact Number"
+                        android:textSize="20sp"
+                        android:id="@+id/contactNumber"
+                        android:fontFamily="@font/robotoregular"
+                        android:textColor="@android:color/black"
+                        android:layout_marginStart="80dp"
+                        android:layout_below="@id/contactPerson"/>
+
+                    <TextView
+                        android:layout_width="70dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/button_call"
+                        android:text="CALL\nNOW"
+                        android:layout_marginEnd="10dp"
+                        android:id="@+id/callNow"
+                        android:textSize="18sp"
+                        android:textColor="@android:color/white"
+                        android:layout_alignParentEnd="true"
+                        android:gravity="center"
+                        android:layout_centerVertical="true"/>
+
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="410dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                app:cardCornerRadius="15dp"
+                android:layout_marginTop="10dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -212,75 +277,31 @@
                         android:adjustViewBounds="true"
                         android:id="@+id/eventPic"/>
 
-                    <Button
-                        android:layout_width="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_height="60dp"
-                        android:id="@+id/regButton"
-                        android:fontFamily="@font/robotothin"
-                        android:text="REGISTER NOW!"
-                        android:textSize="24sp"
-                        android:textStyle="bold"
-                        android:background="@drawable/button"
-                        android:textColor="@android:color/white"/>
-
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>
-            
-            <android.support.v7.widget.CardView
+
+            <Button
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="20dp">
-                
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="6dp">
-                    
-                    <ImageView
-                        android:layout_width="60dp"
-                        android:layout_height="80dp"
-                        android:src="@drawable/smartphone"
-                        android:layout_centerVertical="true"/>
+                android:layout_gravity="center"
+                android:layout_height="60dp"
+                android:id="@+id/regButton"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:fontFamily="@font/robotothin"
+                android:text="REGISTER NOW!"
+                android:textSize="24sp"
+                android:layout_marginTop="20dp"
+                android:textStyle="bold"
+                android:background="@drawable/button_orange"
+                android:textColor="@android:color/white"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Contact Person"
-                        android:textSize="20sp"
-                        android:textColor="@android:color/black"
-                        android:layout_marginStart="80dp"
-                        android:layout_marginTop="10dp"
-                        android:id="@+id/contactPerson"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Contact Number"
-                        android:textSize="20sp"
-                        android:id="@+id/contactNumber"
-                        android:textColor="@android:color/black"
-                        android:layout_marginStart="80dp"
-                        android:layout_below="@id/contactPerson"
-                        android:layout_marginTop="2dp"/>
-
-                    <TextView
-                        android:layout_width="70dp"
-                        android:layout_height="wrap_content"
-                        android:background="@color/cardViewBg"
-                        android:text="CALL\nNOW"
-                        android:id="@+id/callNow"
-                        android:textSize="22sp"
-                        android:textColor="@color/colorAccent"
-                        android:layout_alignParentEnd="true"
-                        android:gravity="center"
-                        android:layout_centerVertical="true"/>
-                    
-                </RelativeLayout>
-
-            </android.support.v7.widget.CardView>
+            <ImageView
+                android:layout_width="70dp"
+                android:layout_height="36dp"
+                android:src="@drawable/evento_white"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="bottom|center_horizontal"/>
             
         </LinearLayout>
         
@@ -341,5 +362,15 @@
             android:src="@drawable/placeholder" />
 
     </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:borderWidth="0dp"
+        android:backgroundTint="@color/bluegray"
+        android:src="@drawable/ic_share"
+        android:id="@+id/shareFab"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="14dp"/>
 
 </FrameLayout>

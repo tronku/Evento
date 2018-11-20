@@ -8,17 +8,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1071428033005:android:4decca64516991db",
+        "mobilesdk_app_id": "1:1071428033005:android:ab2029e5daf3215d",
         "android_client_info": {
-          "package_name": "com.example.tronku.eventmanager"
+          "package_name": "tronku.dsc.eventmanager"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1071428033005-58tp5agbjd9cl2oribs9mf2u7jequkd8.apps.googleusercontent.com",
+          "client_id": "1071428033005-o9gcafdjqlfmdl79ftd73udnc2elo4a6.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.tronku.eventmanager",
+            "package_name": "tronku.dsc.eventmanager",
             "certificate_hash": "43216d22fecf7c389df3946120da778db385b5d3"
           }
         },

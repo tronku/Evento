@@ -20,4 +20,5 @@
     <color name="purpleLayer">  #884ea0 </color>
 
     <color name="selected"> #a9cce3 </color>
+    <color name="bluegray">#6699cc</color>
 </resources>
