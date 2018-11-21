@@ -66,6 +66,9 @@
             android:screenOrientation="portrait" />
         <activity android:name=".ForgotPasswordActivity" />
         <activity android:name=".EmailSendActivity"></activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="574501a4c01aed8ca21f841477c163a89ad9fc4e" />
     </application>
 
 </manifest>

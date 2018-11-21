@@ -364,8 +364,8 @@
     </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         app:borderWidth="0dp"
         android:backgroundTint="@color/bluegray"
         android:src="@drawable/ic_share"

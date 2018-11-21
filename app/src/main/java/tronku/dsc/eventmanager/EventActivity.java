@@ -129,7 +129,9 @@ public class EventActivity extends AppCompatActivity {
         shareFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String shareMessage = event + "\n" + society + "\n\n" + desc + "\nTime: " + getTime(startDate) + ", " + getDate(startDate) + "\nVenue: " + venue;
+                String shareMessage = event + "\n" + society + "\n\n" + desc + "\n\nTime: " + getTime(startDate) + ", " + getDate(startDate) + "\nVenue: " + venue +
+                        "\n\nEvento - All events at one place\n" + "http://play.google.com/store/apps/details?id=tronku.dsc.eventmanager";
+                
                 Intent share = new Intent();
                 share.setAction(Intent.ACTION_SEND);
                 share.putExtra(Intent.EXTRA_TEXT, shareMessage);

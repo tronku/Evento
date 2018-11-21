@@ -173,6 +173,10 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
                 mail.putExtra(Intent.EXTRA_EMAIL, "dscjssnoida@gmail.com");
                 mail.putExtra(Intent.EXTRA_SUBJECT, "Feedback/Issue");
                 startActivity(Intent.createChooser(mail, "Send feedback/issue: "));
+                goToFragment(new UpcomingEventsFragment());
+                setTitle(titles.get(0));
+                menuAdapter.setViewSelected(0, true);
+                break;
         }
 
         viewHolder.mDuoDrawerLayout.closeDrawer();
