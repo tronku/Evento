@@ -64,6 +64,7 @@ public class EventActivity extends AppCompatActivity {
     @BindView(R.id.liveText) TextView liveText;
     @BindView(R.id.shareFab)
     FloatingActionButton shareFab;
+    @BindView(R.id.call) CardView callCard;
 
     private Intent intent, call;
     private static final int REQUEST_CODE = 101, CALENDAR_CODE = 201;
@@ -87,10 +88,6 @@ public class EventActivity extends AppCompatActivity {
         checkValidityAndStartCounter();
 
         call = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + contact_no));
-
-        if(hasAdded()) {
-            notificationSwitch.setChecked(true);
-        }
 
         counterView.setOnCountdownEndListener(new CountdownView.OnCountdownEndListener() {
             @Override
@@ -130,8 +127,8 @@ public class EventActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String shareMessage = event + "\n" + society + "\n\n" + desc + "\n\nTime: " + getTime(startDate) + ", " + getDate(startDate) + "\nVenue: " + venue +
-                        "\n\nEvento - All events at one place\n" + "http://play.google.com/store/apps/details?id=tronku.dsc.eventmanager";
-                
+                        "\n\nEvento - All events at one place\n" + "http://bit.ly/EventoDSC";
+
                 Intent share = new Intent();
                 share.setAction(Intent.ACTION_SEND);
                 share.putExtra(Intent.EXTRA_TEXT, shareMessage);
@@ -202,7 +199,7 @@ public class EventActivity extends AppCompatActivity {
 
 
     public boolean hasAdded() {
-        if(pref.contains(""+eventId)){
+        if(pref.contains(""+id)){
                 Log.i("hasAdded","true");
             return true;
         }
@@ -244,14 +241,15 @@ public class EventActivity extends AppCompatActivity {
             values.put(CalendarContract.Reminders.MINUTES, 10);
             cr.insert(CalendarContract.Reminders.CONTENT_URI, values);
 
-            pref.edit().putString(""+eventId, "Added").apply();
+            pref.edit().putString(String.valueOf(id), String.valueOf(eventId)).apply();
             Log.i("afterClickHasAdded", hasAdded()+"");
         }
 
         else if(!needReminder && hasAdded()){
-            Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventId);
+            String calenderEventId = pref.getString(""+id, "0");
+            Uri uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, Long.parseLong(calenderEventId));
             getContentResolver().delete(uri, null, null);
-            pref.edit().remove(""+eventId).apply();
+            pref.edit().remove(""+id).apply();
             Toast.makeText(this, "Event removed!", Toast.LENGTH_SHORT).show();
         }
 
@@ -270,6 +268,17 @@ public class EventActivity extends AppCompatActivity {
         eventTiming.setText(getTime(startDate) + " - " + getTime(endDate));
         String start = getDate(startDate);
         String end = getDate(endDate);
+
+        if(pref.contains(""+id))
+            notificationSwitch.setChecked(true);
+
+        if(contact_no.equals("null")) {
+            callCard.setVisibility(View.GONE);
+        }
+
+        if(regLink.equals("null"))
+            regButton.setVisibility(View.GONE);
+
         if(start.equals(end)) {
             eventDate.setText(start + " " + getMonth(startDate).substring(0,3) + ", " + startDate.substring(0,4));
         }

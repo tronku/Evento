@@ -97,6 +97,7 @@ public class UpcomingEventsFragment extends Fragment {
             public void onClick(View v) {
                 hasExtra = false;
                 remove.setVisibility(View.GONE);
+                Toast.makeText(getContext(), "Filters removed!", Toast.LENGTH_SHORT).show();
                 updateEvents(false);
             }
         });
