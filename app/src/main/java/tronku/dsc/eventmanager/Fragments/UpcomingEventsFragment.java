@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -36,6 +38,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,6 +54,7 @@ public class UpcomingEventsFragment extends Fragment {
     private FloatingActionButton filter, remove;
     private boolean hasExtra = false;
     private TextView noEvent;
+    private Toast noEventToast;
 
     public UpcomingEventsFragment() {
 
@@ -70,6 +74,8 @@ public class UpcomingEventsFragment extends Fragment {
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         eventsRecyclerView.setAdapter(adapter);
 
+        noEventToast = Toast.makeText(getContext(), "No events found!", Toast.LENGTH_SHORT);
+
         updateEvents(hasExtra);
         if(hasExtra)
             remove.setVisibility(View.VISIBLE);
@@ -79,7 +85,15 @@ public class UpcomingEventsFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                updateEvents(hasExtra);
+                try {
+                    if(isConnected()) {
+                        updateEvents(hasExtra);
+                    }
+                    else
+                        networkCheck();
+                } catch (InterruptedException | IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -179,11 +193,49 @@ public class UpcomingEventsFragment extends Fragment {
                 }
                 else {
                     noEvent.setVisibility(View.VISIBLE);
-                    Toast.makeText(getActivity(), "No events found!", Toast.LENGTH_SHORT).show();
+                    noEventToast.show();
                 }
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        networkCheck();
+    }
+
+
+    public void networkCheck(){
+        Snackbar snackbar = Snackbar.make(view, "No Internet Connection!", Snackbar.LENGTH_INDEFINITE);
+
+        try {
+            if(!isConnected()){
+                View snackbarView = snackbar.getView();
+                snackbarView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.red));
+                snackbar.setAction("RETRY", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        networkCheck();
+                    }
+                });
+                snackbar.setActionTextColor(getResources().getColor(R.color.orange));
+                snackbar.show();
+            }
+            else {
+                snackbar.dismiss();
+            }
+        } catch (InterruptedException | IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isConnected() throws InterruptedException, IOException
+    {
+        String command = "ping -c 1 google.com";
+        return (Runtime.getRuntime().exec(command).waitFor() == 0);
+    }
+
 
 }
