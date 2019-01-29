@@ -207,6 +207,7 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
             }
         }
         else {
+            pressedCount = 0;
             goToFragment(new UpcomingEventsFragment());
             setTitle(titles.get(0));
             menuAdapter.setViewSelected(0, true);
