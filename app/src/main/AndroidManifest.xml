@@ -17,6 +17,7 @@
         android:roundIcon="@drawable/events"
         android:supportsRtl="true"
         android:theme="@style/AppThemeNoBar">
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/events" />
@@ -65,7 +66,8 @@
             android:name=".RegisterEventActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".ForgotPasswordActivity" />
-        <activity android:name=".EmailSendActivity"></activity>
+        <activity android:name=".EmailSendActivity" />
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="574501a4c01aed8ca21f841477c163a89ad9fc4e" />

@@ -1,5 +1,7 @@
 package tronku.dsc.eventmanager;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -11,9 +13,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.support.v7.widget.SearchView;
+import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import tronku.dsc.eventmanager.Adapters.EventsAdapter;
 import tronku.dsc.eventmanager.Fragments.AboutFragment;
 import tronku.dsc.eventmanager.Fragments.UpcomingEventsFragment;
 import tronku.dsc.eventmanager.Fragments.PastEventsFragment;
@@ -39,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
     private ArrayList<String> titles = new ArrayList<>();
     private boolean hasExtra = false;
     private boolean upcoming = true;
+    private boolean isFeedback = false;
     private String fcm_token, currentFrag;
     private int pressedCount = 0;
 
@@ -54,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
         handleToolbar();
         handleDrawer();
         handleMenu();
+
+        Log.e("MainActivity", "onCreate");
 
         if(intent.hasExtra("name")){
             hasExtra = true;
@@ -120,6 +131,11 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
         viewHolder.mDuoMenuView.setAdapter(menuAdapter);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
+
     private void goToFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         currentFrag = fragment.getClass().getName();
@@ -154,7 +170,6 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
     @Override
     public void onOptionClicked(int position, Object objectClicked) {
         setTitle(titles.get(position));
-
         menuAdapter.setViewSelected(position, true);
 
         switch (position) {
@@ -172,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
                         "mailto","dscjssnoida@gmail.com", null));
                 mail.putExtra(Intent.EXTRA_EMAIL, "dscjssnoida@gmail.com");
                 mail.putExtra(Intent.EXTRA_SUBJECT, "Feedback/Issue");
+                isFeedback = true;
                 startActivity(Intent.createChooser(mail, "Send feedback/issue: "));
                 break;
         }
@@ -217,9 +233,11 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
     @Override
     public void onResume() {
         super.onResume();
-        goToFragment(new UpcomingEventsFragment());
-        setTitle(titles.get(0));
-        menuAdapter.setViewSelected(0, true);
+        if (isFeedback) {
+            goToFragment(new UpcomingEventsFragment());
+            setTitle(titles.get(0));
+            menuAdapter.setViewSelected(0, true);
+        }
     }
 
 }

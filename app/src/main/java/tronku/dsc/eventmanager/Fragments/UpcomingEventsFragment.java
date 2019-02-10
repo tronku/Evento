@@ -50,7 +50,7 @@ public class UpcomingEventsFragment extends Fragment {
     private RecyclerView eventsRecyclerView;
     private ArrayList<Event> eventList = new ArrayList<>();
     private View view;
-    private EventsAdapter adapter;
+    public EventsAdapter adapter;
     private FloatingActionButton filter, remove;
     private boolean hasExtra = false;
     private TextView noEvent;
@@ -124,10 +124,12 @@ public class UpcomingEventsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if(getArguments()!=null){
             hasExtra = true;
+            Log.e("Upcoming", "onCreate: true");
         }
     }
 
     public void updateEvents(boolean hasExtra) {
+        Log.e("UpcomingUpdate", "updateEvents: " + hasExtra);
         eventList.clear();
         String url;
         if(hasExtra){
@@ -229,6 +231,12 @@ public class UpcomingEventsFragment extends Fragment {
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapter.updateEvents(eventList);
     }
 
     public boolean isConnected() throws InterruptedException, IOException

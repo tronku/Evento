@@ -8,6 +8,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,16 +21,19 @@ import tronku.dsc.eventmanager.R;
 
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
 
     private Context context;
     private ArrayList<Event> eventArrayList;
+    //private ArrayList<Event> eventFilteredList;
 
     public EventsAdapter(Context context, ArrayList<Event> list) {
         this.context = context;
         eventArrayList = list;
+        //eventFilteredList = list;
     }
 
     @NonNull
@@ -54,6 +61,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         viewHolder.singleEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                viewHolder.eventLayer.setVisibility(View.VISIBLE);
                 Intent event = new Intent(context, EventActivity.class);
                 event.putExtra("societyName", eventArrayList.get(i).getSocietyName());
                 event.putExtra("eventName", eventArrayList.get(i).getEventName());
@@ -68,6 +76,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                 event.putExtra("regLink", eventArrayList.get(i).getRegLink());
                 event.putExtra("id", eventArrayList.get(i).getId());
                 context.startActivity(event);
+                viewHolder.eventLayer.setVisibility(View.INVISIBLE);
             }
         });
     }
@@ -77,10 +86,46 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         return eventArrayList.size();
     }
 
+    //searching
+//    @Override
+//    public Filter getFilter() {
+//        return new Filter() {
+//            @Override
+//            protected FilterResults performFiltering(CharSequence constraint) {
+//                String searchString = constraint.toString();
+//                if (searchString.isEmpty())
+//                    eventFilteredList = eventArrayList;
+//                else {
+//                    ArrayList<Event> filteredList = new ArrayList<>();
+//                    for (Event event: eventArrayList) {
+//                        if (event.getEventName().contains(searchString) || event.getSocietyName().contains(searchString) ||
+//                                event.getEventDesc().contains(searchString))
+//                            filteredList.add(event);
+//                    }
+//
+//                    eventFilteredList = filteredList;
+//                }
+//
+//                FilterResults filterResults = new FilterResults();
+//                filterResults.values = eventFilteredList;
+//                return filterResults;
+//            }
+//
+//            @Override
+//            protected void publishResults(CharSequence constraint, FilterResults results) {
+//                eventFilteredList = (ArrayList<Event>) results.values;
+//                notifyDataSetChanged();
+//            }
+//        };
+//    }
+
+
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView societyName, eventName, eventTime, startDate, startMonth;
         private CardView singleEvent;
         private View layer;
+        private LinearLayout eventLayer;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -91,6 +136,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             startDate = itemView.findViewById(R.id.startDate);
             startMonth = itemView.findViewById(R.id.startMonth);
             layer = itemView.findViewById(R.id.layer);
+            eventLayer = itemView.findViewById(R.id.eventLayer);
         }
     }
 
@@ -141,4 +187,5 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             layer.setBackgroundColor(context.getResources().getColor(R.color.colorAccentDark));
         }
     }
+
 }

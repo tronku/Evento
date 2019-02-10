@@ -1,6 +1,7 @@
 package tronku.dsc.eventmanager;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -234,7 +235,7 @@ public class EventActivity extends AppCompatActivity {
             eventId = Long.parseLong(eventUri.getLastPathSegment());
             Toast.makeText(this, "Event added!", Toast.LENGTH_SHORT).show();
 
-            /** Adding reminder for event added. */
+            /* Adding reminder for event added. */
             values = new ContentValues();
             values.put(CalendarContract.Reminders.EVENT_ID, eventId);
             values.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
@@ -262,6 +263,17 @@ public class EventActivity extends AppCompatActivity {
         Picasso.get().load(logo).placeholder(getResources().getDrawable(R.drawable.placeholder)).into(societyLogo);
         eventDesc.setText(desc);
         Picasso.get().load(image).placeholder(getResources().getDrawable(R.drawable.placeholder)).into(eventImage);
+        eventImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Dialog dialog = new Dialog(EventActivity.this);
+                dialog.setContentView(R.layout.full_image_layout);
+                ImageView poster = dialog.findViewById(R.id.full_image_poster);
+                Picasso.get().load(image).placeholder(getResources().getDrawable(R.drawable.placeholder)).into(poster);
+                dialog.show();
+            }
+        });
+
         eventVenue.setText(venue);
         eventPerson.setText(contact_person);
         eventContact.setText(contact_no);
