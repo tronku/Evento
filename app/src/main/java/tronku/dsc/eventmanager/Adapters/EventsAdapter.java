@@ -24,16 +24,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> {
+public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder> implements Filterable {
 
     private Context context;
     private ArrayList<Event> eventArrayList;
-    //private ArrayList<Event> eventFilteredList;
+    private ArrayList<Event> eventFilteredList;
 
     public EventsAdapter(Context context, ArrayList<Event> list) {
         this.context = context;
         eventArrayList = list;
-        //eventFilteredList = list;
+        eventFilteredList = list;
     }
 
     @NonNull
@@ -45,14 +45,14 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
-        viewHolder.societyName.setText(eventArrayList.get(i).getSocietyName());
-        viewHolder.eventName.setText(eventArrayList.get(i).getEventName());
+        viewHolder.societyName.setText(eventFilteredList.get(i).getSocietyName());
+        viewHolder.eventName.setText(eventFilteredList.get(i).getEventName());
 
-        String timeString = getTime(eventArrayList.get(i).getStartDateTime()) + " - " + getTime(eventArrayList.get(i).getEndDateTime());
+        String timeString = getTime(eventFilteredList.get(i).getStartDateTime()) + " - " + getTime(eventFilteredList.get(i).getEndDateTime());
         viewHolder.eventTime.setText(timeString);
 
-        String startDate = getDate(eventArrayList.get(i).getStartDateTime());
-        String startMon =  getMonth(eventArrayList.get(i).getStartDateTime()).substring(0,3).toUpperCase();
+        String startDate = getDate(eventFilteredList.get(i).getStartDateTime());
+        String startMon =  getMonth(eventFilteredList.get(i).getStartDateTime()).substring(0,3).toUpperCase();
         viewHolder.startDate.setText(startDate);
         viewHolder.startMonth.setText(startMon);
 
@@ -63,18 +63,18 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             public void onClick(View view) {
                 viewHolder.eventLayer.setVisibility(View.VISIBLE);
                 Intent event = new Intent(context, EventActivity.class);
-                event.putExtra("societyName", eventArrayList.get(i).getSocietyName());
-                event.putExtra("eventName", eventArrayList.get(i).getEventName());
-                event.putExtra("eventDesc", eventArrayList.get(i).getEventDesc());
-                event.putExtra("eventStartTime", eventArrayList.get(i).getStartDateTime());
-                event.putExtra("eventEndTime", eventArrayList.get(i).getEndDateTime());
-                event.putExtra("eventVenue", eventArrayList.get(i).getVenue());
-                event.putExtra("contact_person", eventArrayList.get(i).getContact_person());
-                event.putExtra("contact_number", eventArrayList.get(i).getContact_no());
-                event.putExtra("image", eventArrayList.get(i).getImgUrl());
-                event.putExtra("societyLogo", eventArrayList.get(i).getSocietyLogo());
-                event.putExtra("regLink", eventArrayList.get(i).getRegLink());
-                event.putExtra("id", eventArrayList.get(i).getId());
+                event.putExtra("societyName", eventFilteredList.get(i).getSocietyName());
+                event.putExtra("eventName", eventFilteredList.get(i).getEventName());
+                event.putExtra("eventDesc", eventFilteredList.get(i).getEventDesc());
+                event.putExtra("eventStartTime", eventFilteredList.get(i).getStartDateTime());
+                event.putExtra("eventEndTime", eventFilteredList.get(i).getEndDateTime());
+                event.putExtra("eventVenue", eventFilteredList.get(i).getVenue());
+                event.putExtra("contact_person", eventFilteredList.get(i).getContact_person());
+                event.putExtra("contact_number", eventFilteredList.get(i).getContact_no());
+                event.putExtra("image", eventFilteredList.get(i).getImgUrl());
+                event.putExtra("societyLogo", eventFilteredList.get(i).getSocietyLogo());
+                event.putExtra("regLink", eventFilteredList.get(i).getRegLink());
+                event.putExtra("id", eventFilteredList.get(i).getId());
                 context.startActivity(event);
                 viewHolder.eventLayer.setVisibility(View.INVISIBLE);
             }
@@ -83,41 +83,42 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return eventArrayList.size();
+        return eventFilteredList.size();
     }
 
     //searching
-//    @Override
-//    public Filter getFilter() {
-//        return new Filter() {
-//            @Override
-//            protected FilterResults performFiltering(CharSequence constraint) {
-//                String searchString = constraint.toString();
-//                if (searchString.isEmpty())
-//                    eventFilteredList = eventArrayList;
-//                else {
-//                    ArrayList<Event> filteredList = new ArrayList<>();
-//                    for (Event event: eventArrayList) {
-//                        if (event.getEventName().contains(searchString) || event.getSocietyName().contains(searchString) ||
-//                                event.getEventDesc().contains(searchString))
-//                            filteredList.add(event);
-//                    }
-//
-//                    eventFilteredList = filteredList;
-//                }
-//
-//                FilterResults filterResults = new FilterResults();
-//                filterResults.values = eventFilteredList;
-//                return filterResults;
-//            }
-//
-//            @Override
-//            protected void publishResults(CharSequence constraint, FilterResults results) {
-//                eventFilteredList = (ArrayList<Event>) results.values;
-//                notifyDataSetChanged();
-//            }
-//        };
-//    }
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String searchString = constraint.toString().toLowerCase();
+                if (searchString.isEmpty())
+                    eventFilteredList = eventArrayList;
+                else {
+                    ArrayList<Event> filteredList = new ArrayList<>();
+                    for (Event event: eventArrayList) {
+                        if (event.getEventName().toLowerCase().trim().contains(searchString) || event.getSocietyName().toLowerCase().trim().contains(searchString))
+                            filteredList.add(event);
+                    }
+
+                    eventFilteredList = filteredList;
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = eventFilteredList;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                eventFilteredList = (ArrayList<Event>) results.values;
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+
 
 
 
@@ -141,6 +142,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     }
 
     public void updateEvents(ArrayList<Event> list){
+        this.eventFilteredList = list;
         this.eventArrayList = list;
         notifyDataSetChanged();
     }

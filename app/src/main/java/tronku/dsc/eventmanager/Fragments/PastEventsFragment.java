@@ -14,10 +14,14 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,6 +65,7 @@ public class PastEventsFragment extends Fragment {
     private TextView noEvent;
     private ConnectivityReceiver receiver;
     private boolean disconnectedPrev = false;
+    private SearchView searchView;
 
     public PastEventsFragment() {
 
@@ -72,6 +77,7 @@ public class PastEventsFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_past_events, container, false);
+        setHasOptionsMenu(true);
         adapter = new EventsAdapter(getContext(), eventList);
         swipeRefreshLayout = view.findViewById(R.id.swiperefresh);
         eventsRecyclerView = view.findViewById(R.id.eventsListView);
@@ -228,5 +234,26 @@ public class PastEventsFragment extends Fragment {
             updateEvents(hasExtra);
             adapter.updateEvents(eventList);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu, menu);
+        searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
     }
 }

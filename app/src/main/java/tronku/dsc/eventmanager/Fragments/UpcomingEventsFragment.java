@@ -1,6 +1,8 @@
 package tronku.dsc.eventmanager.Fragments;
 
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
@@ -21,6 +23,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.support.v7.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,6 +67,7 @@ public class UpcomingEventsFragment extends Fragment {
     private Toast noEventToast;
     private ConnectivityReceiver receiver;
     private boolean disconnectedPrev = false;
+    private SearchView searchView;
 
     public UpcomingEventsFragment() {
 
@@ -72,7 +77,7 @@ public class UpcomingEventsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_upcoming_events, container, false);
-
+        setHasOptionsMenu(true);
         adapter = new EventsAdapter(getContext(), eventList);
         swipeRefreshLayout = view.findViewById(R.id.swiperefresh);
         eventsRecyclerView = view.findViewById(R.id.eventsListView);
@@ -241,6 +246,24 @@ public class UpcomingEventsFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu, menu);
+        searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.getFilter().filter(query);
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
     }
+
+
+
 }
