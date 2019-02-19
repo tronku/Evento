@@ -2,6 +2,8 @@ package tronku.dsc.eventmanager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -40,6 +42,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     
     private String otp, password;
     private View view;
+    private ConnectivityReceiver receiver;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,33 +51,39 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         view = findViewById(android.R.id.content);
+        receiver = new ConnectivityReceiver(view);
         
         changePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                otp = otpView.getText().toString();
-                password = passwordEditText.getText().toString();
+                if (receiver.isConnected()) {
+                    otp = otpView.getText().toString();
+                    password = passwordEditText.getText().toString();
 
-                if(otp.length()==0 && password.length()==0){
-                    Snackbar snackbar = Snackbar.make(view, "Enter details!", Snackbar.LENGTH_SHORT);
-                    View snackbarView = snackbar.getView();
-                    snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-                    snackbar.show();
+                    if(otp.length()==0 && password.length()==0){
+                        Snackbar snackbar = Snackbar.make(view, "Enter details!", Snackbar.LENGTH_SHORT);
+                        View snackbarView = snackbar.getView();
+                        snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                        snackbar.show();
+                    }
+                    else if(otp.length()==0) {
+                        Snackbar snackbar = Snackbar.make(view, "Enter OTP!", Snackbar.LENGTH_SHORT);
+                        View snackbarView = snackbar.getView();
+                        snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                        snackbar.show();
+                    }
+                    else if(password.length()==0) {
+                        Snackbar snackbar = Snackbar.make(view, "Enter password!", Snackbar.LENGTH_SHORT);
+                        View snackbarView = snackbar.getView();
+                        snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                        snackbar.show();
+                    }
+                    else
+                        change();
                 }
-                else if(otp.length()==0) {
-                    Snackbar snackbar = Snackbar.make(view, "Enter OTP!", Snackbar.LENGTH_SHORT);
-                    View snackbarView = snackbar.getView();
-                    snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-                    snackbar.show();
+                else {
+                    Toast.makeText(ForgotPasswordActivity.this, "No internet!", Toast.LENGTH_SHORT).show();
                 }
-                else if(password.length()==0) {
-                    Snackbar snackbar = Snackbar.make(view, "Enter password!", Snackbar.LENGTH_SHORT);
-                    View snackbarView = snackbar.getView();
-                    snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-                    snackbar.show();
-                }
-                else
-                    change();
                     
             }
         });
@@ -123,5 +132,18 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
         RequestQueue queue = Volley.newRequestQueue(ForgotPasswordActivity.this);
         queue.add(change);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(receiver, filter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(receiver);
     }
 }

@@ -3,7 +3,9 @@ package tronku.dsc.eventmanager;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -50,6 +52,8 @@ public class SignUpActivity extends AppCompatActivity {
     @BindView(R.id.layer)View layer;
 
     private String email, password, name, mobile, fcm_token;
+    private View view;
+    private ConnectivityReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,69 +61,76 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
 
         ButterKnife.bind(this);
+        view = findViewById(android.R.id.content);
+        receiver = new ConnectivityReceiver(view);
 
         signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                email = emailIdEdit.getText().toString();
-                mobile = mobileNoEdit.getText().toString();
-                password = passwordEdit.getText().toString();
-                name = nameEdit.getText().toString();
+                if (receiver.isConnected()) {
+                    email = emailIdEdit.getText().toString();
+                    mobile = mobileNoEdit.getText().toString();
+                    password = passwordEdit.getText().toString();
+                    name = nameEdit.getText().toString();
 
-                if(password.length()==0 && email.length()==0 && name.length()==0 && mobile.length()==0){
-                    Snackbar snackbar = Snackbar.make(view, "Enter details!", Snackbar.LENGTH_SHORT);
-                    View snackbarView = snackbar.getView();
-                    snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-                    snackbar.show();
-                }
-                else if(email.length()==0){
-                    Snackbar snackbar = Snackbar.make(view, "Enter Email-id!", Snackbar.LENGTH_SHORT);
-                    View snackbarView = snackbar.getView();
-                    snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-                    snackbar.show();
-                }
-                else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-                    Snackbar snackbar = Snackbar.make(view, "Enter correct email-id!", Snackbar.LENGTH_SHORT);
-                    View snackbarView = snackbar.getView();
-                    snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-                    snackbar.show();
-                }
-                else if(password.length()==0){
-                    Snackbar snackbar = Snackbar.make(view, "Enter Password!", Snackbar.LENGTH_SHORT);
-                    View snackbarView = snackbar.getView();
-                    snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-                    snackbar.show();
-                }
-                else if(name.length()==0){
-                    Snackbar snackbar = Snackbar.make(view, "Enter Name!", Snackbar.LENGTH_SHORT);
-                    View snackbarView = snackbar.getView();
-                    snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-                    snackbar.show();
-                }
-                else if(mobile.length()==0){
-                    Snackbar snackbar = Snackbar.make(view, "Enter Mobile number!", Snackbar.LENGTH_SHORT);
-                    View snackbarView = snackbar.getView();
-                    snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-                    snackbar.show();
-                }
-                else if(!Patterns.PHONE.matcher(mobile).matches()){
-                    Snackbar snackbar = Snackbar.make(view, "Enter valid mobile number!", Snackbar.LENGTH_SHORT);
-                    View snackbarView = snackbar.getView();
-                    snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-                    snackbar.show();
+                    if(password.length()==0 && email.length()==0 && name.length()==0 && mobile.length()==0){
+                        Snackbar snackbar = Snackbar.make(view, "Enter details!", Snackbar.LENGTH_SHORT);
+                        View snackbarView = snackbar.getView();
+                        snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                        snackbar.show();
+                    }
+                    else if(email.length()==0){
+                        Snackbar snackbar = Snackbar.make(view, "Enter Email-id!", Snackbar.LENGTH_SHORT);
+                        View snackbarView = snackbar.getView();
+                        snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                        snackbar.show();
+                    }
+                    else if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+                        Snackbar snackbar = Snackbar.make(view, "Enter correct email-id!", Snackbar.LENGTH_SHORT);
+                        View snackbarView = snackbar.getView();
+                        snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                        snackbar.show();
+                    }
+                    else if(password.length()==0){
+                        Snackbar snackbar = Snackbar.make(view, "Enter Password!", Snackbar.LENGTH_SHORT);
+                        View snackbarView = snackbar.getView();
+                        snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                        snackbar.show();
+                    }
+                    else if(name.length()==0){
+                        Snackbar snackbar = Snackbar.make(view, "Enter Name!", Snackbar.LENGTH_SHORT);
+                        View snackbarView = snackbar.getView();
+                        snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                        snackbar.show();
+                    }
+                    else if(mobile.length()==0){
+                        Snackbar snackbar = Snackbar.make(view, "Enter Mobile number!", Snackbar.LENGTH_SHORT);
+                        View snackbarView = snackbar.getView();
+                        snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                        snackbar.show();
+                    }
+                    else if(!Patterns.PHONE.matcher(mobile).matches()){
+                        Snackbar snackbar = Snackbar.make(view, "Enter valid mobile number!", Snackbar.LENGTH_SHORT);
+                        View snackbarView = snackbar.getView();
+                        snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                        snackbar.show();
+                    }
+                    else {
+                        emailIdEdit.setText("");
+                        passwordEdit.setText("");
+                        nameEdit.setText("");
+                        mobileNoEdit.setText("");
+                        nameEdit.setEnabled(false);
+                        emailIdEdit.setEnabled(false);
+                        passwordEdit.setEnabled(false);
+                        mobileNoEdit.setEnabled(false);
+                        layer.setVisibility(View.VISIBLE);
+                        loader.setVisibility(View.VISIBLE);
+                        signUpData(name, email, mobile, password);
+                    }
                 }
                 else {
-                    emailIdEdit.setText("");
-                    passwordEdit.setText("");
-                    nameEdit.setText("");
-                    mobileNoEdit.setText("");
-                    nameEdit.setEnabled(false);
-                    emailIdEdit.setEnabled(false);
-                    passwordEdit.setEnabled(false);
-                    mobileNoEdit.setEnabled(false);
-                    layer.setVisibility(View.VISIBLE);
-                    loader.setVisibility(View.VISIBLE);
-                    signUpData(name, email, mobile, password);
+                    Toast.makeText(SignUpActivity.this, "No internet!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -246,5 +257,18 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(receiver, filter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(receiver);
     }
 }

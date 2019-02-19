@@ -94,6 +94,8 @@
                     android:text="Didn't get the OTP? "/>
 
                 <TextView
+                    android:padding="5dp"
+                    android:background="@color/colorAccent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="RESEND"
@@ -101,7 +103,7 @@
                     android:textSize="16sp"
                     android:id="@+id/resend"
                     android:layout_marginStart="4dp"
-                    android:textColor="@color/colorAccent"/>
+                    android:textColor="@android:color/white"/>
 
             </LinearLayout>
 

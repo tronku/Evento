@@ -6,8 +6,10 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.CalendarContract;
@@ -66,6 +68,7 @@ public class EventActivity extends AppCompatActivity {
     @BindView(R.id.shareFab)
     FloatingActionButton shareFab;
     @BindView(R.id.call) CardView callCard;
+    @BindView(R.id.eventImgCard) CardView imgCard;
 
     private Intent intent, call;
     private static final int REQUEST_CODE = 101, CALENDAR_CODE = 201;
@@ -75,6 +78,8 @@ public class EventActivity extends AppCompatActivity {
     private boolean needReminder = false;
     private java.util.Calendar startCal, endCal;
     private SharedPreferences pref;
+    private View view;
+    private ConnectivityReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +88,9 @@ public class EventActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         intent = getIntent();
         pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        view = findViewById(android.R.id.content);
+        receiver = new ConnectivityReceiver(view);
 
         fillData();
         fillViews();
@@ -108,9 +116,13 @@ public class EventActivity extends AppCompatActivity {
         regButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent register = new Intent(EventActivity.this, RegisterEventActivity.class);
-                register.putExtra("website", regLink);
-                startActivity(register);
+                if (receiver.isConnected()) {
+                    Intent register = new Intent(EventActivity.this, RegisterEventActivity.class);
+                    register.putExtra("website", regLink);
+                    startActivity(register);
+                }
+                else
+                    Toast.makeText(EventActivity.this, "No internet!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -262,17 +274,21 @@ public class EventActivity extends AppCompatActivity {
         societyName.setText(society);
         Picasso.get().load(logo).placeholder(getResources().getDrawable(R.drawable.placeholder)).into(societyLogo);
         eventDesc.setText(desc);
-        Picasso.get().load(image).placeholder(getResources().getDrawable(R.drawable.placeholder)).into(eventImage);
-        eventImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Dialog dialog = new Dialog(EventActivity.this);
-                dialog.setContentView(R.layout.full_image_layout);
-                ImageView poster = dialog.findViewById(R.id.full_image_poster);
-                Picasso.get().load(image).placeholder(getResources().getDrawable(R.drawable.placeholder)).into(poster);
-                dialog.show();
-            }
-        });
+        if (image.equals("null"))
+            imgCard.setVisibility(View.GONE);
+        else {
+            Picasso.get().load(image).placeholder(getResources().getDrawable(R.drawable.placeholder)).into(eventImage);
+            eventImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Dialog dialog = new Dialog(EventActivity.this);
+                    dialog.setContentView(R.layout.full_image_layout);
+                    ImageView poster = dialog.findViewById(R.id.full_image_poster);
+                    Picasso.get().load(image).placeholder(getResources().getDrawable(R.drawable.placeholder)).into(poster);
+                    dialog.show();
+                }
+            });
+        }
 
         eventVenue.setText(venue);
         eventPerson.setText(contact_person);
@@ -367,4 +383,16 @@ public class EventActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(receiver, filter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(receiver);
+    }
 }

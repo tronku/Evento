@@ -2,9 +2,12 @@ package tronku.dsc.eventmanager;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.media.Image;
+import android.net.ConnectivityManager;
 import android.net.http.SslError;
+import android.os.VibrationEffect;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,12 +29,17 @@ public class RegisterEventActivity extends AppCompatActivity {
     @BindView(R.id.website) WebView webview;
     @BindView(R.id.webLink) TextView webLink;
     @BindView(R.id.progressBar) ProgressBar progressBar;
+    private View view;
+    private ConnectivityReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_event);
         ButterKnife.bind(this);
+
+        view = findViewById(android.R.id.content);
+        receiver = new ConnectivityReceiver(view);
 
         String url = getIntent().getStringExtra("website");
         webLink.setText(url);
@@ -97,5 +105,18 @@ public class RegisterEventActivity extends AppCompatActivity {
             super.onBackPressed();
             finish();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(receiver, filter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(receiver);
     }
 }

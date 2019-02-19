@@ -5,8 +5,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -53,11 +55,12 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.layer)View layer;
     @BindView(R.id.loader)ProgressBar loader;
     @BindView(R.id.forgotPassword) TextView forgotPassword;
-
     private String email_mobno, password, fcm_token;
     private View view;
     private SharedPreferences pref;
     private static final int REQUEST_CODE = 101;
+    private ConnectivityReceiver receiver;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,39 +70,45 @@ public class LoginActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         view = findViewById(android.R.id.content);
         pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        receiver = new ConnectivityReceiver(view);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                email_mobno = emailId_mobnoEdit.getText().toString();
-                password = passwordEdit.getText().toString();
+                if (receiver.isConnected()) {
+                    email_mobno = emailId_mobnoEdit.getText().toString();
+                    password = passwordEdit.getText().toString();
 
-                if(password.length()==0 && email_mobno.length()==0){
-                    Snackbar snackbar = Snackbar.make(view, "Enter details!", Snackbar.LENGTH_SHORT);
-                    View snackbarView = snackbar.getView();
-                    snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-                    snackbar.show();
-                }
-                else if(email_mobno.length()==0){
-                    Snackbar snackbar = Snackbar.make(view, "Enter Email-id or Mobile no!", Snackbar.LENGTH_SHORT);
-                    View snackbarView = snackbar.getView();
-                    snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-                    snackbar.show();
-                }
-                else if(password.length()==0){
-                    Snackbar snackbar = Snackbar.make(view, "Enter Password!", Snackbar.LENGTH_SHORT);
-                    View snackbarView = snackbar.getView();
-                    snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-                    snackbar.show();
+                    if(password.length()==0 && email_mobno.length()==0){
+                        Snackbar snackbar = Snackbar.make(view, "Enter details!", Snackbar.LENGTH_SHORT);
+                        View snackbarView = snackbar.getView();
+                        snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                        snackbar.show();
+                    }
+                    else if(email_mobno.length()==0){
+                        Snackbar snackbar = Snackbar.make(view, "Enter Email-id or Mobile no!", Snackbar.LENGTH_SHORT);
+                        View snackbarView = snackbar.getView();
+                        snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                        snackbar.show();
+                    }
+                    else if(password.length()==0){
+                        Snackbar snackbar = Snackbar.make(view, "Enter Password!", Snackbar.LENGTH_SHORT);
+                        View snackbarView = snackbar.getView();
+                        snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                        snackbar.show();
+                    }
+                    else {
+                        emailId_mobnoEdit.setText("");
+                        passwordEdit.setText("");
+                        emailId_mobnoEdit.setEnabled(false);
+                        passwordEdit.setEnabled(false);
+                        layer.setVisibility(View.VISIBLE);
+                        loader.setVisibility(View.VISIBLE);
+                        loginUser(email_mobno, password);
+                    }
                 }
                 else {
-                    emailId_mobnoEdit.setText("");
-                    passwordEdit.setText("");
-                    emailId_mobnoEdit.setEnabled(false);
-                    passwordEdit.setEnabled(false);
-                    layer.setVisibility(View.VISIBLE);
-                    loader.setVisibility(View.VISIBLE);
-                    loginUser(email_mobno, password);
+                    Toast.makeText(LoginActivity.this, "No internet!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -140,6 +149,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         askPermission();
+        userLoggedIn();
     }
 
     private void askPermission() {
@@ -248,53 +258,27 @@ public class LoginActivity extends AppCompatActivity {
 
         login = Volley.newRequestQueue(LoginActivity.this);
         login.add(loginreq);
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        networkCheck();
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(receiver, filter);
     }
 
-    public void networkCheck(){
-        Snackbar snackbar = Snackbar.make(view, "No Internet Connection!", Snackbar.LENGTH_INDEFINITE);
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(receiver);
+    }
 
-        try {
-            if(!isConnected()){
-                View snackbarView = snackbar.getView();
-                snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-                snackbar.setAction("RETRY", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        networkCheck();
-                    }
-                });
-                snackbar.setActionTextColor(getResources().getColor(R.color.orange));
-                snackbar.show();
-                loginButton.setEnabled(false);
-                signupButton.setEnabled(false);
-            }
-            else {
-                snackbar.dismiss();
-                loginButton.setEnabled(true);
-                signupButton.setEnabled(true);
-
-                if(pref.contains("token")){
-                    Intent intent = new Intent(this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                }
-            }
-        } catch (InterruptedException | IOException e) {
-            e.printStackTrace();
+    public void userLoggedIn(){
+        if(pref.contains("token")){
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         }
-    }
-
-    public boolean isConnected() throws InterruptedException, IOException
-    {
-        String command = "ping -c 1 google.com";
-        return (Runtime.getRuntime().exec(command).waitFor() == 0);
     }
 
     @Override
@@ -309,4 +293,5 @@ public class LoginActivity extends AppCompatActivity {
                 }
         }
     }
+
 }

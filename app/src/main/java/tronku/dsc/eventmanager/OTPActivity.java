@@ -1,7 +1,9 @@
 package tronku.dsc.eventmanager;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -10,6 +12,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -34,6 +37,7 @@ public class OTPActivity extends AppCompatActivity {
 
     private String otp;
     private View view;
+    private ConnectivityReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,26 +46,34 @@ public class OTPActivity extends AppCompatActivity {
 
         view = findViewById(android.R.id.content);
         ButterKnife.bind(this);
+        receiver = new ConnectivityReceiver(view);
 
         validate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                otp = otpEditView.getText().toString();
-                if(otp.length()==0){
-                    Snackbar snackbar = Snackbar.make(view, "Enter OTP!", Snackbar.LENGTH_SHORT);
-                    View snackbarView = snackbar.getView();
-                    snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
-                    snackbar.show();
+                if (receiver.isConnected()) {
+                    otp = otpEditView.getText().toString();
+                    if(otp.length()==0){
+                        Snackbar snackbar = Snackbar.make(view, "Enter OTP!", Snackbar.LENGTH_SHORT);
+                        View snackbarView = snackbar.getView();
+                        snackbarView.setBackgroundColor(ContextCompat.getColor(getApplicationContext(), R.color.red));
+                        snackbar.show();
+                    }
+                    else
+                        validate(otp);
                 }
                 else
-                    validate(otp);
+                    Toast.makeText(OTPActivity.this, "No internet!", Toast.LENGTH_SHORT).show();
             }
         });
 
         resendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                resend();
+                if (receiver.isConnected())
+                    resend();
+                else
+                    Toast.makeText(OTPActivity.this, "No internet!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -146,5 +158,18 @@ public class OTPActivity extends AppCompatActivity {
 
         queue = Volley.newRequestQueue(OTPActivity.this);
         queue.add(request);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(receiver, filter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(receiver);
     }
 }

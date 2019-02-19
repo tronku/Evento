@@ -2,6 +2,8 @@ package tronku.dsc.eventmanager.Fragments;
 
 
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -15,6 +17,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -27,6 +31,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+
+import tronku.dsc.eventmanager.ConnectivityReceiver;
 import tronku.dsc.eventmanager.MainActivity;
 import tronku.dsc.eventmanager.POJO.Event;
 import tronku.dsc.eventmanager.Adapters.EventsAdapter;
@@ -55,6 +61,8 @@ public class UpcomingEventsFragment extends Fragment {
     private boolean hasExtra = false;
     private TextView noEvent;
     private Toast noEventToast;
+    private ConnectivityReceiver receiver;
+    private boolean disconnectedPrev = false;
 
     public UpcomingEventsFragment() {
 
@@ -73,10 +81,15 @@ public class UpcomingEventsFragment extends Fragment {
         remove = view.findViewById(R.id.remove);
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         eventsRecyclerView.setAdapter(adapter);
+        receiver = new ConnectivityReceiver(view);
 
         noEventToast = Toast.makeText(getContext(), "No events found!", Toast.LENGTH_SHORT);
 
-        updateEvents(hasExtra);
+        if (receiver.isConnected())
+            updateEvents(hasExtra);
+        else
+            disconnectedPrev = true;
+
         if(hasExtra)
             remove.setVisibility(View.VISIBLE);
         else
@@ -85,14 +98,14 @@ public class UpcomingEventsFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                try {
-                    if(isConnected()) {
-                        updateEvents(hasExtra);
-                    }
-                    else
-                        networkCheck();
-                } catch (InterruptedException | IOException e) {
-                    e.printStackTrace();
+                if (receiver.isConnected()) {
+                    disconnectedPrev = false;
+                    updateEvents(hasExtra);
+                }
+                else {
+                    Toast.makeText(getContext(), "No internet!", Toast.LENGTH_SHORT).show();
+                    swipeRefreshLayout.setRefreshing(false);
+                    disconnectedPrev = true;
                 }
             }
         });
@@ -205,45 +218,29 @@ public class UpcomingEventsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        networkCheck();
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        getActivity().registerReceiver(receiver, filter);
     }
 
-
-    public void networkCheck(){
-        Snackbar snackbar = Snackbar.make(view, "No Internet Connection!", Snackbar.LENGTH_INDEFINITE);
-
-        try {
-            if(!isConnected()){
-                View snackbarView = snackbar.getView();
-                snackbarView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.red));
-                snackbar.setAction("RETRY", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        networkCheck();
-                    }
-                });
-                snackbar.setActionTextColor(getResources().getColor(R.color.orange));
-                snackbar.show();
-            }
-            else {
-                snackbar.dismiss();
-            }
-        } catch (InterruptedException | IOException e) {
-            e.printStackTrace();
-        }
+    @Override
+    public void onStop() {
+        super.onStop();
+        getActivity().unregisterReceiver(receiver);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        adapter.updateEvents(eventList);
+        if (receiver.isConnected() && disconnectedPrev) {
+            eventList.clear();
+            updateEvents(hasExtra);
+            adapter.updateEvents(eventList);
+        }
     }
 
-    public boolean isConnected() throws InterruptedException, IOException
-    {
-        String command = "ping -c 1 google.com";
-        return (Runtime.getRuntime().exec(command).waitFor() == 0);
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
     }
-
-
 }

@@ -1,9 +1,9 @@
 package tronku.dsc.eventmanager;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -13,15 +13,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.support.v7.widget.SearchView;
-import android.view.inputmethod.EditorInfo;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import tronku.dsc.eventmanager.Adapters.EventsAdapter;
 import tronku.dsc.eventmanager.Fragments.AboutFragment;
 import tronku.dsc.eventmanager.Fragments.UpcomingEventsFragment;
 import tronku.dsc.eventmanager.Fragments.PastEventsFragment;
@@ -233,6 +229,7 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
     @Override
     public void onResume() {
         super.onResume();
+        pressedCount = 0;
         if (isFeedback) {
             goToFragment(new UpcomingEventsFragment());
             setTitle(titles.get(0));

@@ -3,6 +3,8 @@ package tronku.dsc.eventmanager.Fragments;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -28,6 +30,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import tronku.dsc.eventmanager.Adapters.EventsAdapter;
+import tronku.dsc.eventmanager.ConnectivityReceiver;
 import tronku.dsc.eventmanager.MainActivity;
 import tronku.dsc.eventmanager.POJO.API;
 import tronku.dsc.eventmanager.POJO.Event;
@@ -56,6 +59,8 @@ public class PastEventsFragment extends Fragment {
     private EventsAdapter adapter;
     private boolean hasExtra = false;
     private TextView noEvent;
+    private ConnectivityReceiver receiver;
+    private boolean disconnectedPrev = false;
 
     public PastEventsFragment() {
 
@@ -75,8 +80,12 @@ public class PastEventsFragment extends Fragment {
         remove = view.findViewById(R.id.remove);
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         eventsRecyclerView.setAdapter(adapter);
+        receiver = new ConnectivityReceiver(view);
 
-        updateEvents(hasExtra);
+        if (receiver.isConnected())
+            updateEvents(hasExtra);
+        else
+            disconnectedPrev = true;
 
         if(hasExtra)
             remove.setVisibility(View.VISIBLE);
@@ -86,7 +95,15 @@ public class PastEventsFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                updateEvents(hasExtra);
+                if (receiver.isConnected()) {
+                    disconnectedPrev = false;
+                    updateEvents(hasExtra);
+                }
+                else {
+                    Toast.makeText(getContext(), "No internet!", Toast.LENGTH_SHORT).show();
+                    swipeRefreshLayout.setRefreshing(false);
+                    disconnectedPrev = true;
+                }
             }
         });
 
@@ -190,4 +207,26 @@ public class PastEventsFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        getActivity().registerReceiver(receiver, filter);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        getActivity().unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (receiver.isConnected() && disconnectedPrev) {
+            eventList.clear();
+            updateEvents(hasExtra);
+            adapter.updateEvents(eventList);
+        }
+    }
 }
