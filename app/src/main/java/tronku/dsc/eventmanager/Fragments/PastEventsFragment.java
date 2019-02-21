@@ -1,7 +1,6 @@
 package tronku.dsc.eventmanager.Fragments;
 
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
@@ -9,9 +8,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -22,7 +21,6 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,11 +32,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import tronku.dsc.eventmanager.Adapters.EventsAdapter;
-import tronku.dsc.eventmanager.ConnectivityReceiver;
-import tronku.dsc.eventmanager.MainActivity;
 import tronku.dsc.eventmanager.POJO.API;
 import tronku.dsc.eventmanager.POJO.Event;
 import tronku.dsc.eventmanager.R;
+import tronku.dsc.eventmanager.ConnectivityReceiverEvents;
 import tronku.dsc.eventmanager.SocietyFilterActivity;
 
 import org.json.JSONArray;
@@ -63,7 +60,7 @@ public class PastEventsFragment extends Fragment {
     private EventsAdapter adapter;
     private boolean hasExtra = false;
     private TextView noEvent;
-    private ConnectivityReceiver receiver;
+    private ConnectivityReceiverEvents receiver;
     private boolean disconnectedPrev = false;
     private SearchView searchView;
 
@@ -86,7 +83,11 @@ public class PastEventsFragment extends Fragment {
         remove = view.findViewById(R.id.remove);
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         eventsRecyclerView.setAdapter(adapter);
-        receiver = new ConnectivityReceiver(view);
+
+        Snackbar snackbar = Snackbar.make(view, "No Internet Connection", Snackbar.LENGTH_INDEFINITE);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(getContext().getResources().getColor(R.color.red));
+        receiver = new ConnectivityReceiverEvents(this, "past", hasExtra, snackbar);
 
         if (receiver.isConnected())
             updateEvents(hasExtra);
@@ -229,11 +230,11 @@ public class PastEventsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (receiver.isConnected() && disconnectedPrev) {
-            eventList.clear();
-            updateEvents(hasExtra);
-            adapter.updateEvents(eventList);
-        }
+//        if (receiver.isConnected() && disconnectedPrev) {
+//            eventList.clear();
+//            updateEvents(hasExtra);
+//            adapter.updateEvents(eventList);
+//        }
     }
 
     @Override

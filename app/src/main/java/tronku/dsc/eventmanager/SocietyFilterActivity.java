@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -45,7 +46,7 @@ public class SocietyFilterActivity extends AppCompatActivity {
     private SocietyAdapter adapter;
     private boolean upcoming = true;
     private View view;
-    private ConnectivityReceiver receiver;
+    private ConnectivityReceiverEvents receiver;
     private boolean disconnectedPrev = false;
 
     @Override
@@ -55,7 +56,11 @@ public class SocietyFilterActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         view = findViewById(android.R.id.content);
-        receiver = new ConnectivityReceiver(view);
+
+        Snackbar snackbar = Snackbar.make(view, "No Internet Connection", Snackbar.LENGTH_LONG);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(getResources().getColor(R.color.red));
+        receiver = new ConnectivityReceiverEvents(this, snackbar);
 
         if(getIntent().hasExtra("upcoming"))
             upcoming = true;

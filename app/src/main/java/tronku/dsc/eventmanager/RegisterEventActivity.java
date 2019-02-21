@@ -8,6 +8,7 @@ import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.http.SslError;
 import android.os.VibrationEffect;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -39,7 +40,12 @@ public class RegisterEventActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         view = findViewById(android.R.id.content);
-        receiver = new ConnectivityReceiver(view);
+
+        Snackbar snackbar = Snackbar.make(view, "No Internet Connection", Snackbar.LENGTH_INDEFINITE);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(getResources().getColor(R.color.red));
+        receiver = new ConnectivityReceiver();
+        receiver.setSnackbar(snackbar);
 
         String url = getIntent().getStringExtra("website");
         webLink.setText(url);

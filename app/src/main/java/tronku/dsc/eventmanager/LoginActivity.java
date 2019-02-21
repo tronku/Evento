@@ -70,7 +70,12 @@ public class LoginActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         view = findViewById(android.R.id.content);
         pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        receiver = new ConnectivityReceiver(view);
+
+        Snackbar snackbar = Snackbar.make(view, "No Internet Connection", Snackbar.LENGTH_INDEFINITE);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(getResources().getColor(R.color.red));
+        receiver = new ConnectivityReceiver();
+        receiver.setSnackbar(snackbar);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override

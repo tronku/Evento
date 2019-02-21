@@ -46,7 +46,12 @@ public class OTPActivity extends AppCompatActivity {
 
         view = findViewById(android.R.id.content);
         ButterKnife.bind(this);
-        receiver = new ConnectivityReceiver(view);
+
+        Snackbar snackbar = Snackbar.make(view, "No Internet Connection", Snackbar.LENGTH_INDEFINITE);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(getResources().getColor(R.color.red));
+        receiver = new ConnectivityReceiver();
+        receiver.setSnackbar(snackbar);
 
         validate.setOnClickListener(new View.OnClickListener() {
             @Override

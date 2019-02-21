@@ -1,8 +1,6 @@
 package tronku.dsc.eventmanager.Fragments;
 
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
@@ -12,9 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -36,19 +32,17 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 
-import tronku.dsc.eventmanager.ConnectivityReceiver;
-import tronku.dsc.eventmanager.MainActivity;
 import tronku.dsc.eventmanager.POJO.Event;
 import tronku.dsc.eventmanager.Adapters.EventsAdapter;
 import tronku.dsc.eventmanager.POJO.API;
 import tronku.dsc.eventmanager.R;
+import tronku.dsc.eventmanager.ConnectivityReceiverEvents;
 import tronku.dsc.eventmanager.SocietyFilterActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -65,9 +59,8 @@ public class UpcomingEventsFragment extends Fragment {
     private boolean hasExtra = false;
     private TextView noEvent;
     private Toast noEventToast;
-    private ConnectivityReceiver receiver;
+    private ConnectivityReceiverEvents receiver;
     private boolean disconnectedPrev = false;
-    private SearchView searchView;
 
     public UpcomingEventsFragment() {
 
@@ -86,7 +79,14 @@ public class UpcomingEventsFragment extends Fragment {
         remove = view.findViewById(R.id.remove);
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         eventsRecyclerView.setAdapter(adapter);
-        receiver = new ConnectivityReceiver(view);
+
+        //no internet process
+        Snackbar snackbar = Snackbar.make(filter, "No Internet Connection", Snackbar.LENGTH_INDEFINITE);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(getContext().getResources().getColor(R.color.red));
+
+        receiver = new ConnectivityReceiverEvents(this, "upcoming", hasExtra, snackbar);
+
 
         noEventToast = Toast.makeText(getContext(), "No events found!", Toast.LENGTH_SHORT);
 
@@ -236,18 +236,18 @@ public class UpcomingEventsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (receiver.isConnected() && disconnectedPrev) {
-            eventList.clear();
-            updateEvents(hasExtra);
-            adapter.updateEvents(eventList);
-        }
+//        if (receiver.isConnected() && disconnectedPrev) {
+//            eventList.clear();
+//            updateEvents(hasExtra);
+//            adapter.updateEvents(eventList);
+//        }
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu, menu);
-        searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -263,7 +263,5 @@ public class UpcomingEventsFragment extends Fragment {
             }
         });
     }
-
-
 
 }

@@ -1,12 +1,11 @@
 package tronku.dsc.eventmanager;
 
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +15,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import tronku.dsc.eventmanager.Fragments.AboutFragment;
 import tronku.dsc.eventmanager.Fragments.UpcomingEventsFragment;
@@ -45,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
     private boolean upcoming = true;
     private boolean isFeedback = false;
     private String fcm_token, currentFrag;
-    private int pressedCount = 0;
+    private View view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
         titles = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.menu)));
         viewHolder = new ViewHolder();
         intent = getIntent();
+        view = findViewById(android.R.id.content);
 
         handleToolbar();
         handleDrawer();
@@ -210,16 +209,17 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
     @Override
     public void onBackPressed() {
         if(currentFrag.equals("tronku.dsc.eventmanager.Fragments.UpcomingEventsFragment")) {
-            pressedCount++;
-            if(pressedCount==1) {
-                Toast.makeText(this, "Press again to exit", Toast.LENGTH_SHORT).show();
-            }
-            else if(pressedCount==2){
-                finishAffinity();
-            }
+            Snackbar.make(view, "Are you sure to exit?", Snackbar.LENGTH_LONG).
+                    setAction("YES", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            finishAffinity();
+                        }
+                    }).
+                    setActionTextColor(getResources().getColor(R.color.red)).show();
+
         }
         else {
-            pressedCount = 0;
             goToFragment(new UpcomingEventsFragment());
             setTitle(titles.get(0));
             menuAdapter.setViewSelected(0, true);
@@ -229,7 +229,6 @@ public class MainActivity extends AppCompatActivity implements DuoMenuView.OnMen
     @Override
     public void onResume() {
         super.onResume();
-        pressedCount = 0;
         if (isFeedback) {
             goToFragment(new UpcomingEventsFragment());
             setTitle(titles.get(0));

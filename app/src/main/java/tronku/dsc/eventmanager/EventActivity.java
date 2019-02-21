@@ -15,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -90,7 +91,12 @@ public class EventActivity extends AppCompatActivity {
         pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         view = findViewById(android.R.id.content);
-        receiver = new ConnectivityReceiver(view);
+
+        Snackbar snackbar = Snackbar.make(view, "No Internet Connection", Snackbar.LENGTH_INDEFINITE);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(getResources().getColor(R.color.red));
+        receiver = new ConnectivityReceiver();
+        receiver.setSnackbar(snackbar);
 
         fillData();
         fillViews();

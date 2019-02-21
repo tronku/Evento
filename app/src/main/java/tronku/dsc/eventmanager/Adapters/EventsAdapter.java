@@ -98,7 +98,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
                 else {
                     ArrayList<Event> filteredList = new ArrayList<>();
                     for (Event event: eventArrayList) {
-                        if (event.getEventName().toLowerCase().trim().contains(searchString) || event.getSocietyName().toLowerCase().trim().contains(searchString))
+                        if (event.getEventName().toLowerCase().contains(searchString) || event.getSocietyName().toLowerCase().contains(searchString))
                             filteredList.add(event);
                     }
 
@@ -117,9 +117,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             }
         };
     }
-
-
-
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {

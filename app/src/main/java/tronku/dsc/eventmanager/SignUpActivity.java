@@ -62,7 +62,12 @@ public class SignUpActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         view = findViewById(android.R.id.content);
-        receiver = new ConnectivityReceiver(view);
+
+        Snackbar snackbar = Snackbar.make(view, "No Internet Connection", Snackbar.LENGTH_INDEFINITE);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(getResources().getColor(R.color.red));
+        receiver = new ConnectivityReceiver();
+        receiver.setSnackbar(snackbar);
 
         signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
