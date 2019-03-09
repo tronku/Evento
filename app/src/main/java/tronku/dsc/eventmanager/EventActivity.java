@@ -25,9 +25,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.jsibbold.zoomage.ZoomageView;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormatSymbols;
@@ -68,8 +71,9 @@ public class EventActivity extends AppCompatActivity {
     @BindView(R.id.liveText) TextView liveText;
     @BindView(R.id.shareFab)
     FloatingActionButton shareFab;
-    @BindView(R.id.call) CardView callCard;
     @BindView(R.id.eventImgCard) CardView imgCard;
+    @BindView(R.id.call)
+    RelativeLayout callLayout;
 
     private Intent intent, call;
     private static final int REQUEST_CODE = 101, CALENDAR_CODE = 201;
@@ -289,7 +293,7 @@ public class EventActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Dialog dialog = new Dialog(EventActivity.this);
                     dialog.setContentView(R.layout.full_image_layout);
-                    ImageView poster = dialog.findViewById(R.id.full_image_poster);
+                    ZoomageView poster = dialog.findViewById(R.id.full_image_poster);
                     Picasso.get().load(image).placeholder(getResources().getDrawable(R.drawable.placeholder)).into(poster);
                     dialog.show();
                 }
@@ -307,7 +311,7 @@ public class EventActivity extends AppCompatActivity {
             notificationSwitch.setChecked(true);
 
         if(contact_no.equals("null")) {
-            callCard.setVisibility(View.GONE);
+            callLayout.setVisibility(View.GONE);
         }
 
         if(regLink.equals("null"))

@@ -58,7 +58,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".SocietyFilterActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:label="Societies"/>
         <activity
             android:name=".EventActivity"
             android:screenOrientation="portrait" />

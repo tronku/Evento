@@ -15,6 +15,7 @@
     
     //colors for event list layer
     <color name="orangeLayer">#E67E22</color>
+    <color name="yellowLayer">#C29903</color>
     <color name="greenLayer">  #117a65 </color>
     <color name="redLayer">  #a93226 </color>
     <color name="purpleLayer">  #884ea0 </color>

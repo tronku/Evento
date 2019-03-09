@@ -34,7 +34,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/greenLayer"
+                android:background="@android:color/black"
                 android:id="@+id/layer"
                 android:alpha="0.4"/>
 
@@ -82,6 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Event Name"
+            android:transitionName="name_event"
             android:maxLines="1"
             android:ellipsize="end"
             android:fontFamily="@font/comfortaabold"

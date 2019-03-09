@@ -8,6 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import tronku.dsc.eventmanager.MainActivity;
@@ -19,16 +21,18 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class SocietyAdapter extends RecyclerView.Adapter<SocietyAdapter.ViewHolder> {
+public class SocietyAdapter extends RecyclerView.Adapter<SocietyAdapter.ViewHolder> implements Filterable {
 
     private Context context;
     private ArrayList<Society> societyList;
+    private ArrayList<Society> societyFilteredList;
     private boolean upcoming;
 
     public SocietyAdapter(Context context, ArrayList<Society> societyList, boolean upcoming) {
         this.context = context;
         this.societyList = societyList;
         this.upcoming = upcoming;
+        societyFilteredList = societyList;
     }
 
     @NonNull
@@ -40,16 +44,16 @@ public class SocietyAdapter extends RecyclerView.Adapter<SocietyAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
-        viewHolder.societyName.setText(societyList.get(i).getName());
-        Picasso.get().load(societyList.get(i).getUri()).placeholder(context.getResources().getDrawable(R.drawable.placeholder)).into(viewHolder.societyLogo);
-        viewHolder.societyType.setText(societyList.get(i).getDept());
+        viewHolder.societyName.setText(societyFilteredList.get(i).getName());
+        Picasso.get().load(societyFilteredList.get(i).getUri()).placeholder(context.getResources().getDrawable(R.drawable.placeholder)).into(viewHolder.societyLogo);
+        viewHolder.societyType.setText(societyFilteredList.get(i).getType());
         viewHolder.societyItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent filter = new Intent(context, MainActivity.class);
-                filter.putExtra("name", societyList.get(i).getName());
-                filter.putExtra("logo", societyList.get(i).getUri());
-                filter.putExtra("society", societyList.get(i).getId());
+                filter.putExtra("name", societyFilteredList.get(i).getName());
+                filter.putExtra("logo", societyFilteredList.get(i).getUri());
+                filter.putExtra("society", societyFilteredList.get(i).getId());
                 if(upcoming)
                     filter.putExtra("upcoming","true");
                 else
@@ -63,7 +67,38 @@ public class SocietyAdapter extends RecyclerView.Adapter<SocietyAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-        return societyList.size();
+        return societyFilteredList.size();
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String searchString = constraint.toString().toLowerCase();
+                if (searchString.isEmpty())
+                    societyFilteredList = societyList;
+                else {
+                    ArrayList<Society> filteredList = new ArrayList<>();
+                    for (Society society : societyList) {
+                        if (society.getName().toLowerCase().contains(searchString))
+                            filteredList.add(society);
+                    }
+
+                    societyFilteredList = filteredList;
+                }
+
+                FilterResults results = new FilterResults();
+                results.values = societyFilteredList;
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                societyFilteredList = (ArrayList<Society>) results.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -84,6 +119,7 @@ public class SocietyAdapter extends RecyclerView.Adapter<SocietyAdapter.ViewHold
 
     public void updateData(ArrayList<Society> list){
         societyList = list;
+        societyFilteredList = list;
         notifyDataSetChanged();
     }
 }

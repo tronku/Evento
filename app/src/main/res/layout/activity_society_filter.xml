@@ -7,21 +7,21 @@
     tools:context=".SocietyFilterActivity"
     android:background="@android:color/white">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Societies"
-        android:textColor="@android:color/black"
-        android:fontFamily="@font/robotothin"
-        android:textSize="40sp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="4dp"/>
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Societies"-->
+        <!--android:textColor="@android:color/black"-->
+        <!--android:fontFamily="@font/robotothin"-->
+        <!--android:textSize="40sp"-->
+        <!--android:layout_marginStart="20dp"-->
+        <!--android:layout_marginTop="4dp"/>-->
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="65dp"
         android:visibility="invisible"
+        android:layout_marginTop="20dp"
         android:id="@+id/societyRefresh">
 
         <android.support.v7.widget.RecyclerView
@@ -37,10 +37,17 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
         android:text="Swipe to refresh"
-        android:textSize="20sp"
-        android:textAlignment="center"
-        android:id="@+id/swipeText"/>
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:background="@color/eventBg"
+        android:paddingTop="4dp"
+        android:layout_marginBottom="4dp"/>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/loader_society"/>
 
 </FrameLayout>

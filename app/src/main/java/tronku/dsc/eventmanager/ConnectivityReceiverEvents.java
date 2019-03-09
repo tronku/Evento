@@ -4,8 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.view.View;
 
 import tronku.dsc.eventmanager.Fragments.PastEventsFragment;
 import tronku.dsc.eventmanager.Fragments.UpcomingEventsFragment;
@@ -19,10 +21,12 @@ public class ConnectivityReceiverEvents extends BroadcastReceiver {
     private SocietyFilterActivity societyFilterActivity = null;
     private boolean upcoming;
     private boolean hasExtra;
-    private boolean society = false;
+    private boolean society;
     private Snackbar snackbar;
+    private FloatingActionButton filter;
 
-    public ConnectivityReceiverEvents(Fragment fragment, String fragName, boolean hasExtra, Snackbar snackbar) {
+    public ConnectivityReceiverEvents(Fragment fragment, String fragName, boolean hasExtra, Snackbar snackbar, FloatingActionButton filter) {
+        society = false;
         if (fragName.equals("upcoming")) {
             upcomingEventsFragment = (UpcomingEventsFragment) fragment;
             upcoming = true;
@@ -34,6 +38,7 @@ public class ConnectivityReceiverEvents extends BroadcastReceiver {
 
         this.hasExtra = hasExtra;
         this.snackbar = snackbar;
+        this.filter = filter;
     }
 
     public ConnectivityReceiverEvents (SocietyFilterActivity activity, Snackbar snackbar) {
@@ -49,6 +54,8 @@ public class ConnectivityReceiverEvents extends BroadcastReceiver {
 
             if (noConnectivity) {
                 snackbar.show();
+                if (!society)
+                    filter.setVisibility(View.INVISIBLE);
             }
 
             else {
@@ -56,6 +63,7 @@ public class ConnectivityReceiverEvents extends BroadcastReceiver {
                 if (society)
                     societyFilterActivity.fillData();
                 else {
+                    filter.setVisibility(View.VISIBLE);
                     if (upcoming)
                         upcomingEventsFragment.updateEvents(hasExtra);
                     else

@@ -178,82 +178,84 @@
                 app:cardCornerRadius="15dp"
                 android:layout_height="wrap_content">
 
-                <android.support.v4.widget.NestedScrollView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_margin="16dp">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="10dp">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_margin="20dp"
                         android:text="Workshop Details"
                         android:fontFamily="@font/robotoregular"
                         android:textColor="@android:color/black"
                         android:id="@+id/desc"
                         android:textSize="16sp"/>
 
-                </android.support.v4.widget.NestedScrollView>
-
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="20dp"
-                android:layout_marginStart="20dp"
-                app:cardCornerRadius="15dp"
-                android:id="@+id/call"
-                android:layout_marginTop="30dp">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp">
-
-                    <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="60dp"
-                        android:src="@drawable/smartphone"
-                        android:layout_centerVertical="true"/>
-
-                    <TextView
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignEnd="@id/callNow"
-                        android:text="Contact Person"
-                        android:fontFamily="@font/robotothin"
-                        android:textSize="20sp"
-                        android:textColor="@android:color/black"
-                        android:layout_marginStart="60dp"
-                        android:layout_marginTop="2dp"
-                        android:id="@+id/contactPerson"/>
+                        android:id="@+id/call"
+                        android:layout_margin="4dp">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_alignEnd="@id/callNow"
-                        android:text="Contact Number"
-                        android:textSize="20sp"
-                        android:id="@+id/contactNumber"
-                        android:fontFamily="@font/robotoregular"
-                        android:textColor="@android:color/black"
-                        android:layout_marginStart="60dp"
-                        android:layout_below="@id/contactPerson"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Contact"
+                            android:id="@+id/contact_text"
+                            android:layout_centerHorizontal="true"
+                            android:fontFamily="@font/robotobold"
+                            android:textColor="@android:color/black"/>
 
-                    <TextView
-                        android:layout_width="70dp"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/button_call"
-                        android:text="CALL\nNOW"
-                        android:layout_marginEnd="10dp"
-                        android:id="@+id/callNow"
-                        android:textSize="18sp"
-                        android:textColor="@android:color/white"
-                        android:layout_alignParentEnd="true"
-                        android:gravity="center"
-                        android:layout_centerVertical="true"/>
+                        <!--<ImageView-->
+                            <!--android:layout_width="50dp"-->
+                            <!--android:layout_height="60dp"-->
+                            <!--android:src="@drawable/smartphone"-->
+                            <!--android:layout_centerVertical="true"/>-->
 
-                </RelativeLayout>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignEnd="@id/callNow"
+                            android:text="Contact Person"
+                            android:fontFamily="@font/robotothin"
+                            android:textSize="16sp"
+                            android:textColor="@android:color/black"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="22dp"
+                            android:id="@+id/contactPerson"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignEnd="@id/callNow"
+                            android:text="Contact Number"
+                            android:textSize="16sp"
+                            android:id="@+id/contactNumber"
+                            android:fontFamily="@font/robotobold"
+                            android:textColor="@android:color/black"
+                            android:layout_marginStart="20dp"
+                            android:layout_below="@id/contactPerson"/>
+
+                        <TextView
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/button_call"
+                            android:text="CALL"
+                            android:padding="4dp"
+                            android:layout_marginEnd="20dp"
+                            android:layout_marginTop="30dp"
+                            android:id="@+id/callNow"
+                            android:textSize="18sp"
+                            android:textColor="@android:color/white"
+                            android:layout_alignParentEnd="true"
+                            android:gravity="center"/>
+
+                    </RelativeLayout>
+
+                </LinearLayout>
 
             </android.support.v7.widget.CardView>
 
@@ -337,6 +339,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Workshop Name"
+                android:transitionName="name_event"
                 android:id="@+id/event_Name"
                 android:textSize="26sp"
                 android:maxLines="1"

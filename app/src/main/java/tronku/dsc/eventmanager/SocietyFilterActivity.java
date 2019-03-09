@@ -8,10 +8,16 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,13 +47,13 @@ public class SocietyFilterActivity extends AppCompatActivity {
 
     @BindView(R.id.societyNameView) RecyclerView societyRecyclerView;
     @BindView(R.id.societyRefresh) SwipeRefreshLayout societyRefreshLayout;
-    @BindView(R.id.swipeText) TextView swipeText;
+    @BindView(R.id.loader_society)
+    ProgressBar loader;
     private ArrayList<Society> societyList = new ArrayList<>();
     private SocietyAdapter adapter;
     private boolean upcoming = true;
     private View view;
     private ConnectivityReceiverEvents receiver;
-    private boolean disconnectedPrev = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +63,7 @@ public class SocietyFilterActivity extends AppCompatActivity {
 
         view = findViewById(android.R.id.content);
 
-        Snackbar snackbar = Snackbar.make(view, "No Internet Connection", Snackbar.LENGTH_LONG);
+        Snackbar snackbar = Snackbar.make(view, "No Internet Connection", Snackbar.LENGTH_INDEFINITE);
         View snackbarView = snackbar.getView();
         snackbarView.setBackgroundColor(getResources().getColor(R.color.red));
         receiver = new ConnectivityReceiverEvents(this, snackbar);
@@ -69,30 +75,29 @@ public class SocietyFilterActivity extends AppCompatActivity {
 
         adapter = new SocietyAdapter(this, societyList, upcoming);
 
-        if (receiver.isConnected())
-            fillData();
-        else {
-            Toast.makeText(this, "No internet!", Toast.LENGTH_SHORT).show();
-            disconnectedPrev = true;
-        }
+//        if (receiver.isConnected() && societyList.isEmpty())
+//            fillData();
+//        else {
+//            Toast.makeText(this, "No internet!", Toast.LENGTH_SHORT).show();
+//            disconnectedPrev = true;
+//        }
 
         societyRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 if (receiver.isConnected()) {
-                    disconnectedPrev = true;
                     fillData();
                 }
                 else {
                     Toast.makeText(SocietyFilterActivity.this, "No internet!", Toast.LENGTH_SHORT).show();
                     societyRefreshLayout.setRefreshing(false);
-                    disconnectedPrev = false;
                 }
             }
         });
     }
 
     public void fillData() {
+        societyList.clear();
         final String token = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("token", "token_no");
         Log.d("token", token);
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, API.SOCIETY_API,
@@ -138,12 +143,12 @@ public class SocietyFilterActivity extends AppCompatActivity {
             @Override
             public void onRequestFinished(Request<JSONObject> request) {
                 adapter.updateData(societyList);
-                swipeText.setVisibility(View.INVISIBLE);
                 societyRefreshLayout.setVisibility(View.VISIBLE);
                 societyRecyclerView.setLayoutManager(new LinearLayoutManager(SocietyFilterActivity.this));
                 societyRecyclerView.setAdapter(adapter);
                 societyRecyclerView.setVisibility(View.VISIBLE);
                 societyRefreshLayout.setRefreshing(false);
+                loader.setVisibility(View.INVISIBLE);
             }
         });
     }
@@ -162,12 +167,26 @@ public class SocietyFilterActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (receiver.isConnected() && disconnectedPrev) {
-            societyList.clear();
-            fillData();
-            adapter.updateData(societyList);
-        }
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+        return true;
     }
+
 }

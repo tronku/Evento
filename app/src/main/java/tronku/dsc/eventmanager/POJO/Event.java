@@ -1,10 +1,10 @@
 package tronku.dsc.eventmanager.POJO;
 
 public class Event {
-    private String societyName, eventName, eventDesc, startDateTime, endDateTime, imgUrl, contact_person, contact_no, venue, societyLogo, regLink;
+    private String societyName, eventName, eventDesc, startDateTime, endDateTime, imgUrl, contact_person, contact_no, venue, societyLogo, regLink, type;
     private long id;
 
-    public Event(String societyName, String eventName, String eventDesc, String startDateTime, String endDateTime, String imgUrl, String contact_person, String contact_no, String venue, String societyLogo, String regLink, long id) {
+    public Event(String societyName, String eventName, String eventDesc, String startDateTime, String endDateTime, String imgUrl, String contact_person, String contact_no, String venue, String societyLogo, String regLink, long id, String type) {
         this.societyName = societyName;
         this.eventName = eventName;
         this.eventDesc = eventDesc;
@@ -17,6 +17,7 @@ public class Event {
         this.societyLogo = societyLogo;
         this.regLink = regLink;
         this.id = id;
+        this.type = type;
     }
 
     public String getSocietyName() {
@@ -113,5 +114,13 @@ public class Event {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

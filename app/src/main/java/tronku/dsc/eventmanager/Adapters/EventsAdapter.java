@@ -2,7 +2,11 @@ package tronku.dsc.eventmanager.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.util.Pair;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -21,6 +26,7 @@ import tronku.dsc.eventmanager.R;
 
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -29,11 +35,26 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
     private Context context;
     private ArrayList<Event> eventArrayList;
     private ArrayList<Event> eventFilteredList;
+    private HashMap<String, Drawable> categImg;
 
     public EventsAdapter(Context context, ArrayList<Event> list) {
         this.context = context;
         eventArrayList = list;
         eventFilteredList = list;
+        categImg = new HashMap<>();
+        categImg.put("Technical", context.getDrawable(R.drawable.technical));
+        categImg.put("Dramatics", context.getDrawable(R.drawable.drama));
+        categImg.put("Literary", context.getDrawable(R.drawable.literary));
+        categImg.put("Music & Dance", context.getDrawable(R.drawable.musicdance));
+        categImg.put("Personal Development", context.getDrawable(R.drawable.personaldev));
+        categImg.put("Quizzing", context.getDrawable(R.drawable.quiz));
+        categImg.put("Entrepreneurship", context.getDrawable(R.drawable.startup));
+        categImg.put("Civil", context.getDrawable(R.drawable.civil));
+        categImg.put("Elec", context.getDrawable(R.drawable.electronics));
+        categImg.put("Mechanical", context.getDrawable(R.drawable.mechanical));
+        categImg.put("Photo & Media", context.getDrawable(R.drawable.photography));
+        categImg.put("Fun & Extra", context.getDrawable(R.drawable.fun));
+        categImg.put("Others", context.getDrawable(R.drawable.workshop));
     }
 
     @NonNull
@@ -45,6 +66,10 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
+        String category = eventFilteredList.get(i).getType();
+        if (!category.isEmpty())
+            viewHolder.eventBanner.setImageDrawable(categImg.get(category));
+
         viewHolder.societyName.setText(eventFilteredList.get(i).getSocietyName());
         viewHolder.eventName.setText(eventFilteredList.get(i).getEventName());
 
@@ -124,6 +149,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         private CardView singleEvent;
         private View layer;
         private LinearLayout eventLayer;
+        private ImageView eventBanner;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -135,6 +161,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
             startMonth = itemView.findViewById(R.id.startMonth);
             layer = itemView.findViewById(R.id.layer);
             eventLayer = itemView.findViewById(R.id.eventLayer);
+            eventBanner = itemView.findViewById(R.id.backgroundPic);
         }
     }
 
@@ -171,7 +198,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.ViewHolder
         Random random = new Random();
         int randno = random.nextInt(5);
         if(randno==0){
-            layer.setBackgroundColor(context.getResources().getColor(R.color.orangeLayer));
+            layer.setBackgroundColor(context.getResources().getColor(R.color.yellowLayer));
         }
         else if(randno==1){
             layer.setBackgroundColor(context.getResources().getColor(R.color.greenLayer));

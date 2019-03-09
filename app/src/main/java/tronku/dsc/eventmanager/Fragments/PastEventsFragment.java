@@ -21,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,14 +56,12 @@ public class PastEventsFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView eventsRecyclerView;
     private ArrayList<Event> eventList = new ArrayList<>();
-    private View view;
     private FloatingActionButton filter,remove;
     private EventsAdapter adapter;
     private boolean hasExtra = false;
     private TextView noEvent;
+    private ProgressBar loader;
     private ConnectivityReceiverEvents receiver;
-    private boolean disconnectedPrev = false;
-    private SearchView searchView;
 
     public PastEventsFragment() {
 
@@ -73,7 +72,7 @@ public class PastEventsFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.fragment_past_events, container, false);
+        View view = inflater.inflate(R.layout.fragment_past_events, container, false);
         setHasOptionsMenu(true);
         adapter = new EventsAdapter(getContext(), eventList);
         swipeRefreshLayout = view.findViewById(R.id.swiperefresh);
@@ -81,18 +80,19 @@ public class PastEventsFragment extends Fragment {
         noEvent = view.findViewById(R.id.noevents);
         filter = view.findViewById(R.id.filter);
         remove = view.findViewById(R.id.remove);
+        loader = view.findViewById(R.id.loader_past);
         eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         eventsRecyclerView.setAdapter(adapter);
 
         Snackbar snackbar = Snackbar.make(view, "No Internet Connection", Snackbar.LENGTH_INDEFINITE);
         View snackbarView = snackbar.getView();
         snackbarView.setBackgroundColor(getContext().getResources().getColor(R.color.red));
-        receiver = new ConnectivityReceiverEvents(this, "past", hasExtra, snackbar);
+        receiver = new ConnectivityReceiverEvents(this, "past", hasExtra, snackbar, filter);
 
-        if (receiver.isConnected())
-            updateEvents(hasExtra);
-        else
-            disconnectedPrev = true;
+//        if (receiver.isConnected() && eventList.isEmpty())
+//            updateEvents(hasExtra);
+//        else
+//            disconnectedPrev = true;
 
         if(hasExtra)
             remove.setVisibility(View.VISIBLE);
@@ -103,13 +103,11 @@ public class PastEventsFragment extends Fragment {
             @Override
             public void onRefresh() {
                 if (receiver.isConnected()) {
-                    disconnectedPrev = false;
                     updateEvents(hasExtra);
                 }
                 else {
                     Toast.makeText(getContext(), "No internet!", Toast.LENGTH_SHORT).show();
                     swipeRefreshLayout.setRefreshing(false);
-                    disconnectedPrev = true;
                 }
             }
         });
@@ -159,6 +157,7 @@ public class PastEventsFragment extends Fragment {
                 null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
+                Log.e("RESPONSE", response.toString());
                 for(int i=0; i<response.length(); i++) {
                     try {
                         JSONObject event = response.getJSONObject(i);
@@ -173,9 +172,10 @@ public class PastEventsFragment extends Fragment {
                         String venue = event.getString("venue");
                         String logo = event.getString("society_logo");
                         String regLink = event.getString("registration_link");
+                        String type = event.getString("society_type");
                         long id = event.getLong("id");
 
-                        eventList.add(new Event(society, name, desc, startFullDate, endFullDate, image, contact_person, contact_no, venue, logo, regLink, id));
+                        eventList.add(new Event(society, name, desc, startFullDate, endFullDate, image, contact_person, contact_no, venue, logo, regLink, id, type));
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -204,12 +204,13 @@ public class PastEventsFragment extends Fragment {
                 if(eventList.size()!=0) {
                     adapter.updateEvents(eventList);
                     eventsRecyclerView.setVisibility(View.VISIBLE);
-                    swipeRefreshLayout.setRefreshing(false);
                     noEvent.setVisibility(View.INVISIBLE);
                 }
                 else {
                     noEvent.setVisibility(View.VISIBLE);
                 }
+                loader.setVisibility(View.INVISIBLE);
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
     }
@@ -228,20 +229,10 @@ public class PastEventsFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-//        if (receiver.isConnected() && disconnectedPrev) {
-//            eventList.clear();
-//            updateEvents(hasExtra);
-//            adapter.updateEvents(eventList);
-//        }
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu, menu);
-        searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
