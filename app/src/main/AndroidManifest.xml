@@ -14,6 +14,7 @@
         android:allowBackup="true"
         android:icon="@drawable/events"
         android:label="@string/app_name"
+        android:name=".EventoApplication"
         android:roundIcon="@drawable/events"
         android:supportsRtl="true"
         android:theme="@style/AppThemeNoBar">

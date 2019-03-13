@@ -97,7 +97,7 @@ public class SocietyFilterActivity extends AppCompatActivity {
     }
 
     public void fillData() {
-        societyList.clear();
+        final ArrayList<Society> societies = new ArrayList<>();
         final String token = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getString("token", "token_no");
         Log.d("token", token);
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, API.SOCIETY_API,
@@ -114,7 +114,7 @@ public class SocietyFilterActivity extends AppCompatActivity {
                         String type = society.getString("type");
                         String phone = society.getString("phone");
                         String email = society.getString("email");
-                        societyList.add(new Society(name, uri, societyId, email, type, dept, phone));
+                        societies.add(new Society(name, uri, societyId, email, type, dept, phone));
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -136,12 +136,13 @@ public class SocietyFilterActivity extends AppCompatActivity {
             }
         };
 
-        RequestQueue queue = Volley.newRequestQueue(this);
         request.setShouldCache(true);
-        queue.add(request);
-        queue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<JSONObject>() {
+        EventoApplication.getInstance().addToRequestQueue(request);
+        EventoApplication.getInstance().getRequestQueue().addRequestFinishedListener(new RequestQueue.RequestFinishedListener<JSONObject>() {
             @Override
             public void onRequestFinished(Request<JSONObject> request) {
+                societyList.clear();
+                societyList = societies;
                 adapter.updateData(societyList);
                 societyRefreshLayout.setVisibility(View.VISIBLE);
                 societyRecyclerView.setLayoutManager(new LinearLayoutManager(SocietyFilterActivity.this));

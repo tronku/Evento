@@ -164,7 +164,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginUser(final String email_mobno, String password) {
-        RequestQueue login;
+
         JSONObject credentials = new JSONObject();
         try{
             credentials.put("email", email_mobno);
@@ -240,7 +240,6 @@ public class LoginActivity extends AppCompatActivity {
                             dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                                 @Override
                                 public void onDismiss(DialogInterface dialogInterface) {
-                                    emailId_mobnoEdit.setText("");
                                     passwordEdit.setText("");
                                     emailId_mobnoEdit.setEnabled(true);
                                     passwordEdit.setEnabled(true);
@@ -261,8 +260,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        login = Volley.newRequestQueue(LoginActivity.this);
-        login.add(loginreq);
+        EventoApplication.getInstance().addToRequestQueue(loginreq);
     }
 
     @Override

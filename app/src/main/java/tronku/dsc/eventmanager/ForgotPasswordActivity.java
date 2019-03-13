@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -35,10 +37,13 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     PinView otpView;
     @BindView(R.id.password)
     EditText passwordEditText;
-    @BindView(R.id.resend)
-    Button resendOtp;
+    @BindView(R.id.resend_otp)
+    TextView resendOtp;
     @BindView(R.id.changePassword)
     Button changePassword;
+    @BindView(R.id.layer) View layer;
+    @BindView(R.id.loader)
+    ProgressBar loader;
     
     private String otp, password;
     private View view;
@@ -95,6 +100,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     private void change() {
+        layer.setVisibility(View.VISIBLE);
+        loader.setVisibility(View.VISIBLE);
         JSONObject credentials = new JSONObject();
         try{
             credentials.put("email", getIntent().getStringExtra("email"));
@@ -135,8 +142,15 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             }
         });
 
-        RequestQueue queue = Volley.newRequestQueue(ForgotPasswordActivity.this);
-        queue.add(change);
+        EventoApplication.getInstance().addToRequestQueue(change);
+        EventoApplication.getInstance().getRequestQueue().addRequestFinishedListener(new RequestQueue.RequestFinishedListener<JSONObject>() {
+
+            @Override
+            public void onRequestFinished(Request<JSONObject> request) {
+                layer.setVisibility(View.INVISIBLE);
+                loader.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     @Override

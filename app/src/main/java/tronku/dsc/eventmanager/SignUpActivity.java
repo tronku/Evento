@@ -121,10 +121,7 @@ public class SignUpActivity extends AppCompatActivity {
                         snackbar.show();
                     }
                     else {
-                        emailIdEdit.setText("");
                         passwordEdit.setText("");
-                        nameEdit.setText("");
-                        mobileNoEdit.setText("");
                         nameEdit.setEnabled(false);
                         emailIdEdit.setEnabled(false);
                         passwordEdit.setEnabled(false);
@@ -175,7 +172,7 @@ public class SignUpActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.POST, API.SIGNUP_API, object,
+        JsonObjectRequest signUpReq = new JsonObjectRequest(Request.Method.POST, API.SIGNUP_API, object,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -248,10 +245,7 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
 
-        objectRequest.setTag("auth");
-        RequestQueue queue = Volley.newRequestQueue(SignUpActivity.this);
-        queue.add(objectRequest);
-
+        EventoApplication.getInstance().addToRequestQueue(signUpReq);
     }
 
     @Override

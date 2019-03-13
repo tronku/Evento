@@ -8,8 +8,8 @@
     <com.jsibbold.zoomage.ZoomageView
         android:id="@+id/full_image_poster"
         android:background="@android:color/black"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:zoomage_restrictBounds="false"
         app:zoomage_animateOnReset="true"
         app:zoomage_autoResetMode="UNDER"

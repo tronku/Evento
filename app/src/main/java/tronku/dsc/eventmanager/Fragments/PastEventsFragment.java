@@ -33,6 +33,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import tronku.dsc.eventmanager.Adapters.EventsAdapter;
+import tronku.dsc.eventmanager.EventoApplication;
 import tronku.dsc.eventmanager.POJO.API;
 import tronku.dsc.eventmanager.POJO.Event;
 import tronku.dsc.eventmanager.R;
@@ -142,7 +143,7 @@ public class PastEventsFragment extends Fragment {
     }
 
     public void updateEvents(boolean hasExtra) {
-        eventList.clear();
+        final ArrayList<Event> events = new ArrayList<>();
         String url;
         if(hasExtra){
             url = "http://13.126.64.67/api/society/" + getArguments().getString("society") + "/events/past";
@@ -175,7 +176,7 @@ public class PastEventsFragment extends Fragment {
                         String type = event.getString("society_type");
                         long id = event.getLong("id");
 
-                        eventList.add(new Event(society, name, desc, startFullDate, endFullDate, image, contact_person, contact_no, venue, logo, regLink, id, type));
+                        events.add(new Event(society, name, desc, startFullDate, endFullDate, image, contact_person, contact_no, venue, logo, regLink, id, type));
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -196,12 +197,13 @@ public class PastEventsFragment extends Fragment {
             }
         };
 
-        RequestQueue queue = Volley.newRequestQueue(getContext());
-        queue.add(request);
-        queue.addRequestFinishedListener(new RequestQueue.RequestFinishedListener<JSONObject>() {
+        EventoApplication.getInstance().addToRequestQueue(request);
+        EventoApplication.getInstance().getRequestQueue().addRequestFinishedListener(new RequestQueue.RequestFinishedListener<JSONObject>() {
             @Override
             public void onRequestFinished(Request<JSONObject> request) {
-                if(eventList.size()!=0) {
+                if(events.size()!=0) {
+                    eventList.clear();
+                    eventList = events;
                     adapter.updateEvents(eventList);
                     eventsRecyclerView.setVisibility(View.VISIBLE);
                     noEvent.setVisibility(View.INVISIBLE);

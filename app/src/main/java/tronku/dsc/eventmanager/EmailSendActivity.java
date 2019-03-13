@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -33,6 +34,9 @@ public class EmailSendActivity extends AppCompatActivity {
     Button sendEmail;
     @BindView(R.id.emailId)
     EditText emailIdEditText;
+    @BindView(R.id.loader)
+    ProgressBar loader;
+    @BindView(R.id.layer) View layer;
 
     private View view;
     private ConnectivityReceiver receiver;
@@ -73,6 +77,8 @@ public class EmailSendActivity extends AppCompatActivity {
     }
 
     private void sendData(final String email) {
+        loader.setVisibility(View.VISIBLE);
+        layer.setVisibility(View.VISIBLE);
         JSONObject params = new JSONObject();
         try{
             params.put("email", email);
@@ -97,8 +103,14 @@ public class EmailSendActivity extends AppCompatActivity {
             }
         });
 
-        RequestQueue queue = Volley.newRequestQueue(EmailSendActivity.this);
-        queue.add(otpGen);
+        EventoApplication.getInstance().addToRequestQueue(otpGen);
+        EventoApplication.getInstance().getRequestQueue().addRequestFinishedListener(new RequestQueue.RequestFinishedListener<JSONObject>() {
+            @Override
+            public void onRequestFinished(Request<JSONObject> request) {
+                loader.setVisibility(View.INVISIBLE);
+                layer.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     @Override

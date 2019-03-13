@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +35,9 @@ public class OTPActivity extends AppCompatActivity {
     @BindView(R.id.validate)Button validate;
     @BindView(R.id.otpView)PinView otpEditView;
     @BindView(R.id.resend) TextView resendButton;
+    @BindView(R.id.layer) View layer;
+    @BindView(R.id.loader)
+    ProgressBar loader;
 
     private String otp;
     private View view;
@@ -110,8 +114,10 @@ public class OTPActivity extends AppCompatActivity {
     }
 
     private void validate(String otp) {
+        layer.setVisibility(View.VISIBLE);
+        loader.setVisibility(View.INVISIBLE);
+
         //validation
-        RequestQueue queue;
         JSONObject otpValid = new JSONObject();
         try{
             otpValid.put("otp", otp);
@@ -161,8 +167,15 @@ public class OTPActivity extends AppCompatActivity {
             }
         });
 
-        queue = Volley.newRequestQueue(OTPActivity.this);
-        queue.add(request);
+        EventoApplication.getInstance().addToRequestQueue(request);
+        EventoApplication.getInstance().getRequestQueue().addRequestFinishedListener(new RequestQueue.RequestFinishedListener<JSONObject>() {
+
+            @Override
+            public void onRequestFinished(Request<JSONObject> request) {
+                layer.setVisibility(View.INVISIBLE);
+                loader.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     @Override
