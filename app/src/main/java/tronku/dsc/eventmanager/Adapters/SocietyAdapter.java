@@ -45,7 +45,18 @@ public class SocietyAdapter extends RecyclerView.Adapter<SocietyAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
         viewHolder.societyName.setText(societyFilteredList.get(i).getName());
-        Picasso.get().load(societyFilteredList.get(i).getUri()).placeholder(context.getResources().getDrawable(R.drawable.placeholder)).into(viewHolder.societyLogo);
+        if (societyFilteredList.get(i).getUri() != null){
+            Picasso.get()
+                    .load(societyFilteredList.get(i).getUri())
+                    .placeholder(R.drawable.placeholder)
+                    .into(viewHolder.societyLogo);
+        }
+        else {
+            Picasso.get()
+                    .load(R.drawable.placeholder)
+//                .placeholder(context.getResources().getDrawable(R.drawable.placeholder))
+                    .into(viewHolder.societyLogo);
+        }
         viewHolder.societyType.setText(societyFilteredList.get(i).getType());
         viewHolder.societyItem.setOnClickListener(new View.OnClickListener() {
             @Override
